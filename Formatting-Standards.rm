@@ -1,0 +1,27 @@
+################################
+@file: Formattin-Standards.rm
+@author: KeepId
+@date: March 30, 2022
+################################
+
+Please refer to https://docs.scala-lang.org/style/ and https://docs.scala-lang.org/style/scaladoc.html for formatting standards.
+The following are the highlights of the standards.
+
+CTRL + ALT + L is your FRIEND! (auto-formatting)
+
+General:
+ + Add space after "if", "for", "while", "else"
+
+Naming:
+ + Variables        : lower camel-case
+    - Private       : lower camel-case, prefixed with '_'
+ + Values
+    - Constants     : upper camel-case
+    - Non-constants : lower camel-case
+ + Methods          : lower camel-case
+ + Classes          : upper camel-case
+
+If-statements:
+ + Trivial Conditionals (if short and 2-cased)  : val res = if (foo) bar else baz
+ + If-statement without else condition          : Use curly-braces
+ + One-liner if-statement with else condition   : Don't use curly-braces
