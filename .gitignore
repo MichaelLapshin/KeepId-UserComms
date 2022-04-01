@@ -1,7 +1,10 @@
 # Ignore IDE settings
-/.idea
-/out
+.idea/
+out/
+target/
 
-# Executables
+# Executables & Compiled Code Files
 *.exe
 *.out
+*.class
+*.tasty
