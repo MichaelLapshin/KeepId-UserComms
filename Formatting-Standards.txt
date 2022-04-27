@@ -11,6 +11,7 @@ CTRL + ALT + L is your FRIEND! (auto-formatting)
 
 General:
  + Add space after "if", "for", "while", "else"
+ + When declaring variables, provide the type whenever possible.
 
 Naming:
  + Variables        : lower camel-case

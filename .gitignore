@@ -1,10 +1,28 @@
-# Ignore IDE settings
-.idea/
-out/
+# .Gitignore for Scala and IntelliJ
+
+# Scala
+*.class
+
+# scala 3
+.tasty
+
+# IntelliJ
+*.log
+*.iml
+*.ipr
+*.iws
+.idea
+out
+lib/
+
+# Others
+dist/*
+logs/
+
+# sbt
+project/project/
+project/target/
 target/
 
-# Executables & Compiled Code Files
-*.exe
-*.out
-*.class
-*.tasty
+# mac
+.DS_Store
