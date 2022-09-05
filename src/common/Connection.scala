@@ -10,8 +10,13 @@ object Connection {
    * Define information used to facilitate the connection between servers.
    */
   object Server {
-    val (MessageBrokerAddress: String, MessageBrokerPort: String) = ("localhost", "9093")
-    val (CertificateDatabaseAddress: String, CertificateDatabasePort: String) = ("some_address", "12345")
+    // Message broker information
+    val MessageBrokerAddress: String = "localhost"
+    val MessageBrokerPort: String = "9093"
+
+    // Certificate database address
+    val DatabaseAddress: String = "localhost"
+    val DatabasePort: String = "7007"
   }
 
   /**
@@ -26,7 +31,7 @@ object Connection {
   /**
    * Function to create Kafka server properties.
    */
-  def createProps: Properties = {
+  def messageBrokerProps: Properties = {
     val props: Properties = new Properties()
 
     // Common properties
@@ -52,28 +57,29 @@ object Connection {
    * @param properties The properties used to create the admin client.
    * @return True if the topic exists. If the topic was created, then true would be returned.
    */
-  def checkTopic(topic: String, properties: Properties, createIfMissing: Boolean = true): Boolean = {
+  def checkTopic(topic: String, properties: Properties, createIfMissing: Boolean = true): Boolean = { // TODO, remove "createIfMissing" since this program should not be creating its own topics
     val adminClient = AdminClient.create(properties)
     val listTopics = adminClient.listTopics
     val names = listTopics.names.get
     val contains = names.contains(topic)
 
-    printf(s"Checking if topic %s exists on Kafka server...", topic)
+    println(s"Checking if topic '$topic' exists on Kafka server...")
 
     if (!contains) {
-      printf(s"Topic %s doesn't exist on Kafka server. Creating a new topic ", topic)
+      println(s"Topic '$topic' doesn't exist on Kafka server. Creating the new topic.")
 
       if (createIfMissing) {
         try {
           val newTopic = new NewTopic(topic, 1, 1.toShort)
           adminClient.createTopics(java.util.Collections.singletonList(newTopic))
+          println("Created.")
         } finally {
           adminClient.close()
         }
       }
     }
     else {
-      printf(s"Topic '%s' already exists on Kafka server.", topic)
+      println(s"Topic '$topic' already exists on Kafka server.")
     }
 
     true //names.contains(topic)

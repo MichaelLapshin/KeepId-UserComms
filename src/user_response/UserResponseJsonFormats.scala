@@ -1,10 +1,10 @@
-package user_update
+package user_response
 
 /**
- * @file: UserUpdateJsonFormats.scala
- * @description: Define the formats of valid received and sent json strings in the user udpate sequence.
+ * @file: UserResponseJsonFormats.scala
+ * @description: Define the formats of valid received and sent json strings in the user response sequence.
  * @author: KeepId
- * @date: April 10, 2022
+ * @date: September 3, 2022
  */
 
 
@@ -12,7 +12,7 @@ import common.Domains
 import spray.json.DefaultJsonProtocol
 
 // Class which defines the format and expected fields of the user update json.
-case class UserUpdateReceived(
+case class UserResponseReceived(
                                device_id: Domains.DeviceId,
                                encrypted_data_fields: Domains.EncryptedDataFields
                              )

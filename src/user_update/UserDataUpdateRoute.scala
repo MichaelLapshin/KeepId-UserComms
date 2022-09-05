@@ -22,7 +22,7 @@ class UserDataUpdateRoute {
    * @return The string user ID that is mapped from the given device ID.
    */
   def fetchUserId(device_id: Domains.DeviceId): Domains.UserId = {
-    println("Fetching user id using the device id '{}'.", device_id)
+    println(s"Fetching user id using the device id '$device_id'.")
     "some_user_id"
   }
 
@@ -35,7 +35,7 @@ class UserDataUpdateRoute {
    */
   def updateUserData(user_id: Domains.UserId, encrypted_data_fields: Domains.EncryptedDataFields): Boolean = {
     // Using the Kafka stream, push data to the message broker
-    println(s"Pushing data to the message broker. With user id '{}' and encrypted data '{}'", user_id, encrypted_data_fields)
+    println(s"Pushing data to the message broker. With user id '$user_id' and encrypted data '$encrypted_data_fields'")
 
     val dataToSend = UserUpdateToForward(user_id, encrypted_data_fields)
     Producer.send(Connection.Topic.KeepUpdateEntryTopic, dataToSend.toJson.prettyPrint)
@@ -56,6 +56,7 @@ class UserDataUpdateRoute {
         // Processes the request body information
         val user_id: Domains.UserId = fetchUserId(content.device_id)
 
+        // Attempts to forward the data
         if (updateUserData(user_id, content.encrypted_data_fields))
           complete("Update request received.")
         else

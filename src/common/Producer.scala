@@ -6,7 +6,7 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import java.util.Properties
 
 object Producer {
-  lazy val props: Properties = Connection.createProps
+  lazy val props: Properties = Connection.messageBrokerProps
   lazy val producer = new KafkaProducer[String, String](props)
 
   /**

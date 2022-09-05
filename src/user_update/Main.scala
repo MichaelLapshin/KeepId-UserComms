@@ -41,7 +41,7 @@ object UserDataUpdateHttpServer {
       .flatMap(_.unbind()) // trigger unbinding from the port
       .onComplete(_ => system.terminate()) // and shutdown when done
 
-    CertificateDatabase.close() // Closes the user certification database
+//    Database.close() // Closes the user certification database // TODO, reintroduce this
     Producer.close() // Closes the message broker producer
     println("The server has been stopped.");
   }

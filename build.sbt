@@ -23,5 +23,5 @@ libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
 libraryDependencies += "org.apache.kafka" % "kafka-clients" % KafkaVersion
 
 // Cassandra
-libraryDependencies += "com.datastax.cassandra" % "cassandra-driver-core" % "3.3.0"
+libraryDependencies += "com.datastax.cassandra" % "cassandra-driver-core" % "4.14.1"
 libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-cassandra" % "3.0.4"
