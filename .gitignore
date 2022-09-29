@@ -20,9 +20,10 @@ dist/*
 logs/
 
 # sbt
-project/project/
-project/target/
-target/
+project/project/*
+project/target/*
+target/*
+.bsp/sbt.json
 
 # mac
 .DS_Store
