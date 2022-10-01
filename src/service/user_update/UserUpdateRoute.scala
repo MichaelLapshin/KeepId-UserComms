@@ -1,8 +1,8 @@
-package user_update
+package service.user_update
 
 /**
- * @file: UserDataUpdateRoute.scala
- * @description: Define the class UserDataUpdateRoute used in determining
+ * @file: UserUpdateRoute.scala
+ * @description: Define the class UserUpdateRoute used in determining
  *               the route and task of a user-data update request.
  * @author: KeepId
  * @date: April 10, 2022
@@ -12,16 +12,16 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
 import common.{Connection, Domains, Producer}
 import spray.json._
-import user_update.UserUpdateJsonProtocol.{userUpdateReceivedFormat, userUpdateToForwardFormat}
+import service.user_update.UserUpdateJsonProtocol.{userUpdateReceivedFormat, userUpdateToForwardFormat}
 
-class UserDataUpdateRoute {
+class UserUpdateRoute {
   /**
    * Fetches the user ID using the device ID from the database.
    *
    * @param device_id The device ID to use as reference.
    * @return The string user ID that is mapped from the given device ID.
    */
-  def fetchUserId(device_id: Domains.DeviceId): Domains.UserId = {
+  def fetchUserId(device_id: Domain.DeviceId): Domain.UserId = {
     println(s"Fetching user id using the device id '$device_id'.")
     "some_user_id"
   }
@@ -33,7 +33,7 @@ class UserDataUpdateRoute {
    * @param encrypted_data_fields The encrypted datafields to forward.
    * @return True if the update message was successfully forwarded. False otherwise.
    */
-  def updateUserData(user_id: Domains.UserId, encrypted_data_fields: Domains.EncryptedDataFields): Boolean = {
+  def updateUserData(user_id: Domain.UserId, encrypted_data_fields: Domain.EncryptedDataFields): Boolean = {
     // Using the Kafka stream, push data to the message broker
     println(s"Pushing data to the message broker. With user id '$user_id' and encrypted data '$encrypted_data_fields'")
 
@@ -41,15 +41,19 @@ class UserDataUpdateRoute {
     Producer.send(Connection.Topic.KeepUpdateEntryTopic, dataToSend.toJson.prettyPrint)
   }
 
+  private def prepareUpdateMessage(): String = {
+    // TODO: complete the logic here.
+  }
+
   // Route definition
-  lazy val update_route: Route = concat(
+  lazy val updateRoute: Route = concat(
     get {
       // Alive route
       complete("I'm alive.")
     },
     post {
-      // User-data update request route
-      entity(as[String]) { data =>
+      // User update request route
+      entity(as[userUpdateReceiveFormat]) { data => // TODO: Make sure that the entity type is being used correctly
         // Parses the request body
         val content: UserUpdateReceived = data.parseJson.convertTo[UserUpdateReceived]
 

@@ -1,8 +1,8 @@
-package user_update
+package service.user_update
 
 /**
- * @file: Main.scala
- * @description: The object in charge of starting and stopping the User-Data Update server.
+ * @file: UserUpdateServer.scala
+ * @description: The object in charge of starting and stopping the User Update Server.
  * @author: KeepId
  * @date: March 30, 2022
  */
@@ -15,13 +15,13 @@ import common.Producer
 import scala.io.StdIn
 import scala.concurrent.Future
 
-object UserDataUpdateHttpServer {
+object UserUpdateServer {
   // Server variables
   var running = false;
   val (interface: String, port: Int) = ("localhost", 8001)
 
   def main(args: Array[String]) = {
-    println("Starting the User-Data Update server...")
+    println("Starting the User Update Server...")
 
     implicit val system = ActorSystem(Behaviors.empty, "the-name-of-the-actor-system")
     // needed for the future flatMap/onComplete in the end
@@ -43,9 +43,11 @@ object UserDataUpdateHttpServer {
 
 //    Database.close() // Closes the user certification database // TODO, reintroduce this
     Producer.close() // Closes the message broker producer
-    println("The server has been stopped.");
+    println("The server has been stopped.")
   }
 
+
+  // TOOD: Move this method into a common file for all servers to use.
   /**
    * Wait until the user ends the program to continue.
    */
