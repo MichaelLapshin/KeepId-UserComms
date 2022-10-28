@@ -1,6 +1,6 @@
 ################################
 @file: Formattin-Standards.rm
-@author: KeepId
+@author: KeepId Inc.
 @date: March 30, 2022
 ################################
 

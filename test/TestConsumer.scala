@@ -2,8 +2,8 @@ object TestConsumer {
 
 }
 
+import common.message_broker.Connection
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import common.Connection
 
 import java.time.Duration
 import java.util.regex.Pattern

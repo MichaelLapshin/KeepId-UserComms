@@ -1,13 +1,13 @@
 package common.constants
 
 /**
- * @file: Status.scala
+ * @file: StatusCode.scala
  * @description: Define status for the backend services.
- * @author: KeepId
+ * @author: KeepId Inc.
  * @date: October 13, 2022
  */
 
-object Status {
+object StatusCode {
   val Success: Int = 0
   val Fail: Int = 1
   val Error: Int = 2
