@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
 val AkkaVersion = "2.7.0"
 val AkkaHttpVersion = "10.4.0"
 val KafkaVersion = "3.1.0"
-val MongoDBVersion = "4.7.1"
+val MySQLVersion = "5.1.24"
 
 // Akka
 libraryDependencies += "com.typesafe.akka" %% "akka-actor" % AkkaVersion
@@ -25,5 +25,5 @@ libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
 // Kafka Client
 libraryDependencies += "org.apache.kafka" % "kafka-clients" % KafkaVersion
 
-// MongoDB Driver
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % MongoDBVersion
+// MySQL java
+libraryDependencies += "mysql" % "mysql-connector-java" % MySQLVersion

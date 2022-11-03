@@ -9,9 +9,9 @@ package common.constants
 
 object Domain {
   // User information
-  type UserId = String
+  type UserId = Long
   type UserPin = String
-  type DeviceId = String
+  type DeviceId = Long
   type UserCertificate = String
 
   // User device provider identification
@@ -24,7 +24,7 @@ object Domain {
 
   // Response data
   type Response = String
-  type RequestId = String
+  type RequestId = Long
   type ReportMessage = String
 
   // Encryption data
@@ -34,7 +34,8 @@ object Domain {
   type EncryptedPrivateKeys = String
 
   // Company information
-  type CompanyId = String
+  type CompanyId = Long
+  type CompanyPin = String
   type CompanyName = String
   type CompanyAddress = String
   type HostAddress = String

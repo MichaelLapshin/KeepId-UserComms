@@ -12,8 +12,8 @@ RUN [build the source code]
 
 # Create the image that will host the services' executable
 FROM scratch
-COPY [the executable file]
-WORKDIR [working directory]
+COPY --from=build_base [the stuff to copy]
+WORKDIR /home/unpriv
 USER unpriv
 CMD ["/[the executable]"]
 

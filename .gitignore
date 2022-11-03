@@ -1,5 +1,8 @@
 # .Gitignore for Scala and IntelliJ
 
+# Secrets
+secrets/
+
 # Scala
 *.class
 

@@ -10,7 +10,7 @@ package services.user_response
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives
 import common.message_broker.{Connection, Producer}
-import common.constants.{Domain, RouteReplyMessages}
+import common.constants.{Domain, RouteReplyMsg}
 import spray.json._
 import services.user_response.{
   UserResponseAcceptReceiveData,
@@ -33,7 +33,7 @@ class UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
   lazy val responseRoute: Route = concat(
     get {
       // Ping route
-      complete(RouteReplyMessages.Ping)
+      complete(RouteReplyMsg.Ping)
     },
     post {
       // User response route
@@ -42,7 +42,7 @@ class UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
         // TODO: Complete this logic.
       }
     },
-    failWith(new Throwable(RouteReplyMessages.InvalidRoute))
+    failWith(new Throwable(RouteReplyMsg.InvalidRoute))
   )
 
 }

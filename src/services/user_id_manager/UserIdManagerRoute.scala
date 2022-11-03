@@ -10,7 +10,7 @@ package services.user_id_manager
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
 import common.message_broker.{Connection, Producer}
-import common.constants.{Domain, RouteReplyMessages}
+import common.constants.{Domain, RouteReplyMsg}
 import spray.json._
 import services.user_id_manager.UserIdManagerJsonProtocol.{userIdManagerReceiveFormat, userIdManagerReturnFormat}
 
@@ -24,7 +24,7 @@ class UserIdManagerRoute {
   lazy val idManagerRoute: Route = concat(
     get {
       // Ping route
-      complete(RouteReplyMessages.Ping)
+      complete(RouteReplyMsg.Ping)
     },
     post {
       // User ID request route
@@ -33,7 +33,7 @@ class UserIdManagerRoute {
         // TODO: Complete this logic.
       }
     },
-    failWith(new Throwable(RouteReplyMessages.InvalidRoute))
+    failWith(new Throwable(RouteReplyMsg.InvalidRoute))
   )
 
 }

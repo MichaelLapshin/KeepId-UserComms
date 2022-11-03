@@ -9,7 +9,7 @@ package services.user_update
  */
 
 import akka.http.scaladsl.server.{Directives, Route}
-import common.constants.{Domain, RouteReplyMessages}
+import common.constants.{Domain, RouteReplyMsg}
 import common.message_broker.{Connection, Producer}
 
 class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
@@ -43,7 +43,7 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
   lazy val UpdateRoute: Route = concat(
     get {
       // Ping route
-      complete(RouteReplyMessages.Ping)
+      complete(RouteReplyMsg.Ping)
     },
     post {
       // User update request route
@@ -59,7 +59,7 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
         }
       }
     },
-    failWith(new Throwable(RouteReplyMessages.InvalidRoute))
+    failWith(new Throwable(RouteReplyMsg.InvalidRoute))
   )
 
 }
