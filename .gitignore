@@ -19,14 +19,15 @@ out
 lib/
 
 # Others
-dist/*
+dist/
 logs/
 
 # sbt
-project/project/*
-project/target/*
-target/*
+project/project/s
+project/target/
+target/
 .bsp/sbt.json
+.bsp/
 
 # mac
 .DS_Store
