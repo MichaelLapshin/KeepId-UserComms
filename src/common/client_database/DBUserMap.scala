@@ -1,4 +1,4 @@
-package common.database_logic
+package common.client_database
 
 /**
  * @file: DBUserMap.scala
@@ -102,5 +102,6 @@ object DBUserMap {
    */
   def registerUserToDB(user_id_map: UserIdMap): Unit = {
     // TODO, complete this logic
+    DatabaseIO.commit()
   }
 }

@@ -1,4 +1,4 @@
-package common.database_logic
+package common.client_database
 
 /**
  * @file: DBSystemClientManager.scala
