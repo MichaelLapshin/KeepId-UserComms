@@ -11,6 +11,7 @@ import common.constants.Domain
 import java.time._
 
 class Request(val request_id: Domain.RequestId,
+              val user_id: Domain.UserId,
               val company_id: Domain.CompanyId,
               val data_fields: Domain.ExpectedDataFields,
               val active_time: LocalDateTime,

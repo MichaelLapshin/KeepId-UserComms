@@ -11,12 +11,7 @@ object Connection {
    */
   object Server {
     // Message broker information
-    val MessageBrokerAddress: String = "localhost"
-    val MessageBrokerPort: String = "9093"
-
-    // Certificate database address
-    val DatabaseAddress: String = "localhost"
-    val DatabasePort: String = "7007"
+    val MessageBrokerUrl: String = "localhost:9093"
   }
 
   /**
@@ -35,7 +30,7 @@ object Connection {
     val props: Properties = new Properties()
 
     // Common properties
-    props.put("bootstrap.servers", Server.MessageBrokerAddress + ":" + Server.MessageBrokerPort)
+    props.put("bootstrap.servers", Server.MessageBrokerUrl)
     props.put("log.retention.hours", 168) // Number of hours to keep the log
     props.put("acks", "all") // Blocks until the full record has been passed
     props.put("retries", 0) // No retries if fails to send. If set to >0, there there is a chance of duplicate
@@ -57,7 +52,7 @@ object Connection {
    * @param properties The properties used to create the admin client.
    * @return True if the topic exists. If the topic was created, then true would be returned.
    */
-  def checkTopic(topic: String, properties: Properties, createIfMissing: Boolean = true): Boolean = { // TODO, remove "createIfMissing" since this program should not be creating its own topics
+  def checkTopic(topic: String, properties: Properties): Boolean = {
     val adminClient = AdminClient.create(properties)
     val listTopics = adminClient.listTopics
     val names = listTopics.names.get
@@ -67,16 +62,6 @@ object Connection {
 
     if (!contains) {
       println(s"Topic '$topic' doesn't exist on Kafka server. Creating the new topic.")
-
-      if (createIfMissing) {
-        try {
-          val newTopic = new NewTopic(topic, 1, 1.toShort)
-          adminClient.createTopics(java.util.Collections.singletonList(newTopic))
-          println("Created.")
-        } finally {
-          adminClient.close()
-        }
-      }
     }
     else {
       println(s"Topic '$topic' already exists on Kafka server.")

@@ -16,6 +16,7 @@ import scala.concurrent.Future
 
 import common.message_broker.Producer
 import services.user_update.UserUpdateRoute
+import common.client_database.DatabaseIO
 
 object UserUpdateServer {
   // Server variables
@@ -38,13 +39,13 @@ object UserUpdateServer {
 
     waitUntilUserEndsServer();
 
-    // Stops the server
+    // Terminates the server
     bindingFuture
       .flatMap(_.unbind()) // trigger unbinding from the port
       .onComplete(_ => system.terminate()) // and shutdown when done
 
-//    Database.close() // Closes the user certification database // TODO, reintroduce this
-    Producer.close() // Closes the message broker producer
+    DatabaseIO.closeConnection()
+    Producer.close()
     println("The server has been stopped.")
   }
 

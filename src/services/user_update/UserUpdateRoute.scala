@@ -9,20 +9,11 @@ package services.user_update
  */
 
 import akka.http.scaladsl.server.{Directives, Route}
+import common.client_database.{DBSystemClientManager, DatabaseIO}
 import common.constants.{Domain, RouteReplyMsg}
 import common.message_broker.{Connection, Producer}
 
 class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
-  /**
-   * Fetches the user ID using the device ID from the database.
-   *
-   * @param device_id The device ID to use as reference.
-   * @return The string user ID that is mapped from the given device ID.
-   */
-  def fetchUserId(device_id: Domain.DeviceId): Domain.UserId = {
-    println(s"Fetching user id using the device id '$device_id'.")
-    "some_user_id" // TODO, complete the logic here
-  }
 
   /**
    * Forward the message using the message broker to the Keep.
@@ -49,13 +40,14 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
       // User update request route
       entity(as[UserUpdateReceiveData]) { data =>
         // Processes the request body information
-        val user_id: Domain.UserId = fetchUserId(data.device_id)
+        val user_id: Domain.UserId = DBSystemClientManager.getUserId(data.device_id)
+        DatabaseIO.commit()
 
         // Attempts to forward the data
         if (updateUserData(user_id, data.encrypted_data_fields)) {
           complete("Update request received.")
         }else {
-          complete("Update request could not be processed.")
+          failWith(new Throwable("Update request could not be processed."))
         }
       }
     },

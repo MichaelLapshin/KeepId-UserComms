@@ -38,6 +38,6 @@ object Domain {
   type CompanyPin = String
   type CompanyName = String
   type CompanyAddress = String
-  type HostAddress = String
+  type HostUrl = String
   type HostCertificate = String
 }

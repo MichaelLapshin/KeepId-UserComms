@@ -7,7 +7,7 @@ package common.client_database
  * @date: November 1, 2022
  */
 
-import java.sql.{Connection, DriverManager}
+import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
 /**
  * DatabaseIO
@@ -17,8 +17,8 @@ import java.sql.{Connection, DriverManager}
  */
 object DatabaseIO {
   private val driver = "com.mysql.jdbc.Driver"
-  var connection: Connection = _
-  openConnection()
+  private val schema = "ClientDatabase"
+  private var connection: Connection = _
 
   /**
    * openConnection()
@@ -27,7 +27,7 @@ object DatabaseIO {
    *     CLIENT_DB_USERNAME: The username of the client database.
    *     CLIENT_DB_PASSWORD: The password of the database.
    */
-  def openConnection(): Unit = {
+  def openConnection(read_only: Boolean = false): Unit = {
     Class.forName(driver)
 
     // Connects to the database
@@ -38,7 +38,18 @@ object DatabaseIO {
 
     // Set connection configurations
     connection.setAutoCommit(false)
+    connection.setSchema(schema)
+    connection.setReadOnly(read_only)
+    connection.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT)
+    connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE)
   }
+
+  /**
+   * prepareStatement()
+   * @param stmt, the statement to prepare.
+   * @return PreparedStatement
+   */
+  def prepareStatement(stmt: String): PreparedStatement = connection.prepareStatement(stmt)
 
   /**
    * commit()

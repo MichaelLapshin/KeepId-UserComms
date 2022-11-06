@@ -41,8 +41,8 @@ trait UserIdManagerJsonProtocol extends SprayJsonSupport with DefaultJsonProtoco
 
   implicit object userRequestFormat extends RootJsonFormat[UserRequestData] {
     def read(value: JsValue) = UserRequestData(
-      request_id = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.RequestId, null).toString,
-      company_id = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.CompanyId, null).toString,
+      request_id = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.RequestId, null).convertTo[Long],
+      company_id = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.CompanyId, null).convertTo[Long],
       company_name = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.CompanyName, null).toString,
       expected_data_fields = value.asJsObject.fields.get(ProtocolJsonKeys.ExpectedDataFields).toJson.convertTo[Domain.ExpectedDataFields],
       active_time = LocalDateTime.parse(value.asJsObject.fields.getOrElse(ProtocolJsonKeys.ActiveTime, Time.NullTime).toString, Time.StringFormat),

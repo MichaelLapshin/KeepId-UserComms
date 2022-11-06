@@ -10,15 +10,22 @@ package common.client_database
 import common.constants.Domain
 import common.database_structs.UserIdMap
 
+import java.sql.{PreparedStatement, Timestamp}
+import java.time.LocalDateTime
+
+/**
+ * NOTE: None of the operations below commit the transaction to the database.
+ */
 object DBUserMap {
   private val random = new scala.util.Random()
   private val randomRetryLimit: Int = 1000
-  private val userPinLength: Int = 6
+  private val userPinLength: Int = 20
   private val validUserPinChars: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
   /**
    * generateAlphaNumStr()
    * Generates a string of the given length using only capital characters and integers.
+   *
    * @param length The length of the string to generate.
    * @return The generated capitalized alpha-numeric string.
    */
@@ -85,23 +92,37 @@ object DBUserMap {
   }
 
   /**
+   * registerUserToDB()
+   * Stored the new unique user mapping in the client database.
+   */
+  private def registerUserToDB(user_id_map: UserIdMap,
+                               user_certificate: String,
+                               apple_id: String): Unit = {
+    val ps: PreparedStatement = DatabaseIO.prepareStatement(
+      "INSERT INTO User (user_id, device_id, user_pin, user_certificate, apple_id) VALUES (?, ?, ?, ?, ?, ?)"
+    )
+    ps.setLong(1, user_id_map.user_id)
+    ps.setLong(2, user_id_map.device_id)
+    ps.setNString(3, user_id_map.user_pin)
+    ps.setString(4, user_certificate)
+    ps.setString(5, apple_id)
+    ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()))
+
+    ps.execute()
+  }
+
+  /**
    * createUniqueUser()
    * Create a unique user. This includes the userId, userPin, and deviceId.
    *
    * @return A structure mapping the 3 unique identifiers of the user.
    */
-  def createUniqueUser() = new UserIdMap(
-    user_id = generateUniqueUserId(),
-    user_pin = generateUniqueUserPin(),
-    device_id = generateUniqueDeviceId()
-  )
-
-  /**
-   * registerUserToDB()
-   * Stored the new unique user mapping in the client database.
-   */
-  def registerUserToDB(user_id_map: UserIdMap): Unit = {
-    // TODO, complete this logic
-    DatabaseIO.commit()
+  def createUniqueUser(user_certificate: String, apple_id: String) = {
+    val user = new UserIdMap(
+      user_id = generateUniqueUserId(),
+      user_pin = generateUniqueUserPin(),
+      device_id = generateUniqueDeviceId()
+    )
+    registerUserToDB(user, user_certificate, apple_id)
   }
 }

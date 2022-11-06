@@ -32,7 +32,7 @@ object ProtocolJsonKeys {
   val CompanyId: String = "company_id"
   val CompanyName: String = "company_name"
   val CompanyAddress: String = "company_address"
-  val HostAddress: String = "host_address"
+  val HostUrl: String = "host_url"
   val HostCertificate: String = "host_certificate"
 
   // Request time

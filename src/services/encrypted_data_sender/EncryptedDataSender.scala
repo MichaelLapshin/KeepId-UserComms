@@ -8,14 +8,10 @@ package services.encrypted_data_sender
  */
 
 import common.message_broker.{Connection, Producer}
-import common.Domain
-import services.encrypted_data_sender.EncryptedDataSenderJsonProtocol.{
-  encryptedDataReceiveFormat,
-  encryptedDataForwardFormat
-}
+import common.constants.Domain
 
 class EncryptedDataSender extends Thread {
-  private def forwardEncryptedData(address: Domain.HostAddress, certificate: Domain.HostCertificate): Unit = {
+  private def forwardEncryptedData(url: Domain.HostUrl, certificate: Domain.HostCertificate): Unit = {
     // TODO: complete the logic here.
   }
 
