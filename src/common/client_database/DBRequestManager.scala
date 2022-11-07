@@ -109,25 +109,24 @@ object DBRequestManager {
       expire_time = result.getTimestamp("expire_time").toLocalDateTime)
   }
 
-  def rejectRequest(request_id: Domain.RequestId) = {
-
-    if (setRequestResponseTimeNow(request_id) != 1) {
-
-    }
-
-    val ps: PreparedStatement = DatabaseIO.prepareStatement("INSERT ")
-    ps.execute()
+  def rejectRequest(request_id: Domain.RequestId): Unit = {
+    setRequestResponseTimeNow(request_id)
   }
 
   def reportRequest(request_id: Domain.RequestId,
-                    report_message: Domain.ReportMessage) = {
-    // TODO: complete this logic
+                    report_message: Domain.ReportMessage): Unit = {
+    setRequestResponseTimeNow(request_id)
+    val ps: PreparedStatement = DatabaseIO.prepareStatement("INSERT INTO ClientDatabase.RequestReport (request_id, report_message) VALUES (?, ?)")
+    ps.setLong(1, request_id)
+    ps.setString(2, report_message)
+    ps.execute()
   }
 
-  def acceptRequest(request_id: Domain.RequestId,
-                    encrypted_public_keys: Domain.EncryptedPublicKeys,
-                    encrypted_private_keys: Domain.EncryptedPrivateKeys) = {
-    // TODO: complete this logic
+  def acceptRequest(request_id: Domain.RequestId): Unit = {
+    setRequestResponseTimeNow(request_id)
+    val ps: PreparedStatement = DatabaseIO.prepareStatement("INSERT INTO ClientDatabase.RequestAccept (request_id) VALUES (?)")
+    ps.setLong(1, request_id)
+    ps.execute()
   }
 
   /**

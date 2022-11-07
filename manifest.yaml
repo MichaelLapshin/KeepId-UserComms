@@ -3,7 +3,7 @@
   @description: Development compose file for configuring Kubernetes for deployment.
   @author: KeepId Inc.
 """
-
+#---
 #apiVersion: v1
 #kind: Service
 #metadata:
@@ -14,7 +14,7 @@
 #    - port: 80
 #  selector:
 #    app:
-#---
+---
 apiVersion: v1
 kind: pod
 metadata:
@@ -35,81 +35,3 @@ spec:
           ports:
             - containerPort: 80
 ---
-apiVersion: v1
-
-"""
-#version: "3.8"
-#
-#### Services ####
-#services:
-#  # Database
-#  mongo_database:
-#    image: mongo
-#
-#
-#  # Services
-#  encrypted_data_sender:
-#    image: encrypted_data_sender_image
-#    container_name: encrypted_data_sender_container
-#    build: /src/services/encrypted_data_sender/Dockerfile
-#    networks:
-#      - keepid-net
-#    ports:
-#      - "2180:2180"
-#
-#  user_id_manager:
-#    image: user_id_manager_image
-#    container_name: user_id_manager_container
-#    build: /src/services/user_id_manager/Dockerfile
-#    networks:
-#      - keepid-net
-#    ports:
-#      - "2181:2181"
-#
-#  user_request_fetcher:
-#    image: user_request_fetcher_image
-#    container_name: user_request_fetcher_container
-#    build: /src/services/user_request_fetcher/Dockerfile
-#    networks:
-#      - keepid-net
-#    ports:
-#      - "2182:2182"
-#
-#  user_request_manager:
-#    image: user_request_manager_image
-#    container_name: user_request_manager_container
-#    build: /src/services/user_request_manager/Dockerfile
-#    networks:
-#      - keepid-net
-#    ports:
-#      - "2183:2183"
-#
-#  user_response:
-#    image: user_response_image
-#    container_name: user_response_container
-#    build: /src/services/user_response/Dockerfile
-#    networks:
-#      - keepid-net
-#    ports:
-#      - "2184:2184"
-#
-#  user_update:
-#    image: user_update_image
-#    container_name: user_update_container
-#    build: /src/services/user_update/Dockerfile
-#    networks:
-#      - keepid-net
-#    ports:
-#      - "2185:2185"
-#
-#### Networks ###
-#networks:
-#  certification-id-manager-net: # TODO: remove this network once confirmed its uselessness
-#    name: certification-id-manager-net
-#    driver: bridge # Cannot be accessed from the outside unless ports are allocated
-#    external: false
-#  keepid-net:
-#    name: keepid-net
-#    driver: bridge
-#    external: false
-"""

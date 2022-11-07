@@ -16,12 +16,14 @@ import java.sql.{PreparedStatement, ResultSet}
  */
 object DBSystemClientManager {
 
-  def authenticateUser(user_id: Domain.UserId, session: HttpSession): Boolean = {
-    // TODO: complete this logic
+  def authenticateUser(user_id: Domain.UserId, connection: Boolean /* TODO, set valid param type */): Boolean = {
+    // TODO: complete user authentication logic
+    true
   }
 
-  def authenticateCompany(company_id: Domain.CompanyId, session: HttpSession): Boolean = {
-    // TODO: complete this logic
+  def authenticateCompany(company_id: Domain.CompanyId, connection: Boolean /* TODO, set valid param type */): Boolean = {
+    // TODO: complete company authentication logic
+    true
   }
 
   /**

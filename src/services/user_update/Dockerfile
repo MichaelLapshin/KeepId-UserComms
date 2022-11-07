@@ -18,3 +18,5 @@ USER unpriv
 CMD ["/[the executable]"]
 
 # TODO: Complete this docker file
+# Note: you should compile the project locally, but only upload the executable jar to the executable jar.
+#       This would be more computing effecient (since avoids the cloud) as well as secure since no compiling in an image.
