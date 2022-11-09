@@ -1,5 +1,7 @@
 package services.user_request_fetcher
 
+import org.slf4j.LoggerFactory
+
 /**
  * @file: UserRequestFetchServer.scala
  * @description: The object in charge of starting and stopping the User Request Fetch Server.
@@ -8,11 +10,13 @@ package services.user_request_fetcher
  */
 
 object UserRequestFetchServer {
+  private val log = LoggerFactory.getLogger(this.getClass)
+
   def main(args: Array[String]) = {
-    println("Starting the User Request Fetch Server...")
+    log.info("Starting the User Request Fetch Server...")
 
     // TODO: complete the logic here.
 
-    println("The server has been stopped.")
+    log.info("The server has been stopped.")
   }
 }

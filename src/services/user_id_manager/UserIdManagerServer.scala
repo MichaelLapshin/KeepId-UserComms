@@ -1,5 +1,7 @@
 package services.user_id_manager
 
+import org.slf4j.LoggerFactory
+
 /**
  * @file: UserIdManagerServer.scala
  * @description: The object in charge of starting and stopping the User ID Manager Server.
@@ -8,11 +10,13 @@ package services.user_id_manager
  */
 
 object UserIdManagerServer {
+  private val log = LoggerFactory.getLogger(this.getClass)
+
   def main(args: Array[String]) = {
-    println("Starting the User ID Manager Server...")
+    log.info("Starting the User ID Manager Server...")
 
     // TODO: complete the logic here.
 
-    println("The server has been stopped.")
+    log.info("The server has been stopped.")
   }
 }

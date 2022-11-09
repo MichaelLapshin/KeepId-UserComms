@@ -9,11 +9,13 @@ package services.user_update
  */
 
 import akka.http.scaladsl.server.{Directives, Route}
-import common.client_database.{DBSystemClientManager, DatabaseIO}
+import common.client_database.{ClientDatabase, DBSystemClientManager}
 import common.constants.{Domain, RouteReplyMsg}
 import common.message_broker.{Connection, Producer}
+import org.slf4j.LoggerFactory
 
 class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   /**
    * Forward the message using the message broker to the Keep.
@@ -34,6 +36,7 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
   lazy val UpdateRoute: Route = concat(
     get {
       // Ping route
+      log.info("Received ping request.")
       complete(RouteReplyMsg.Ping)
     },
     post {
@@ -41,7 +44,7 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
       entity(as[UserUpdateReceiveData]) { data =>
         // Processes the request body information
         val user_id: Domain.UserId = DBSystemClientManager.getUserId(data.device_id)
-        DatabaseIO.commit()
+        ClientDatabase.commit()
 
         // Attempts to forward the data
         if (updateUserData(user_id, data.encrypted_data_fields)) {

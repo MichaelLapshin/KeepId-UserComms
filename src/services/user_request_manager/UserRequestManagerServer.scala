@@ -1,5 +1,7 @@
 package services.user_request_manager
 
+import org.slf4j.LoggerFactory
+
 /**
  * @file: UserRequestManagerServer.scala
  * @description: The Main method of the server handling the creation and user notification of new user data requests.
@@ -8,11 +10,13 @@ package services.user_request_manager
  */
 
 object UserRequestManagerServer {
+  private val log = LoggerFactory.getLogger(this.getClass)
+
   def main(args: Array[String]) = {
-    println("Starting the User Request Manager Server...")
+    log.info("Starting the User Request Manager Server...")
 
     // TODO: complete the logic here.
 
-    println("The server has been stopped.")
+    log.info("The server has been stopped.")
   }
 }

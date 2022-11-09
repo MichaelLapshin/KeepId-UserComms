@@ -1,5 +1,7 @@
 package services.encrypted_data_sender
 
+import org.slf4j.LoggerFactory
+
 /**
  * @file: EncryptedDataSenderServer.scala
  * @description: The object in charge of starting and stopping the Encrypted Data Sender Server.
@@ -8,11 +10,13 @@ package services.encrypted_data_sender
  */
 
 object EncryptedDataSenderServer {
+  private val log = LoggerFactory.getLogger(this.getClass)
+
   def main(args: Array[String]) = {
-    println("Starting the Encrypted Data Sender Server...")
+    log.info("Starting the Encrypted Data Sender Server...")
 
     // TODO: complete the logic here.
 
-    println("The server has been stopped.")
+    log.info("The server has been stopped.")
   }
 }

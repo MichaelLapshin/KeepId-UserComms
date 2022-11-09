@@ -7,16 +7,17 @@ package services.user_request_manager
  * @date: September 29, 2022
  */
 
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{Directives, Route}
 import akka.http.scaladsl.server.Directives._
 import common.message_broker.{Connection, Producer}
 import common.constants.{Domain, RouteReplyMsg}
+import services.user_request_manager.{UserRequestManagerJsonProtocol, UserRequestReceiveData, UserRequestReturnData}
+
+import org.slf4j.LoggerFactory
 import spray.json._
-import services.user_request_manager.UserRequestManagerJsonProtocol.{
 
-}
-
-class UserRequestManagerRoute {
+class UserRequestManagerRoute extends Directives with UserRequestManagerJsonProtocol {
+  private val log = LoggerFactory.getLogger(this.getClass)
 
   private def prepareReturnMessage(): String = {
     // TODO: finish the logic here.
@@ -26,6 +27,7 @@ class UserRequestManagerRoute {
   lazy val requestFetchRoute: Route = concat(
     get {
       // Ping route
+      log.info("Received ping request.")
       complete(RouteReplyMsg.Ping)
     },
     post {

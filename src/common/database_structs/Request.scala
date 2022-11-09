@@ -16,4 +16,7 @@ class Request(val request_id: Domain.RequestId,
               val data_fields: Domain.ExpectedDataFields,
               val active_time: LocalDateTime,
               val response_time: LocalDateTime,
-              val expire_time: LocalDateTime)
+              val expire_time: LocalDateTime) {
+  override def toString: String = f"{ request_id:${request_id}, user_id:${user_id}, company_id:${company_id}, " +
+    f"data_fields:${data_fields}, active_time:${active_time}, response_time:${response_time}, expire_time:${expire_time} }"
+}

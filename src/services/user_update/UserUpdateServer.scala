@@ -10,21 +10,21 @@ package services.user_update
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-
-import scala.io.StdIn
-import scala.concurrent.Future
-
+import common.client_database.ClientDatabase
 import common.message_broker.Producer
-import services.user_update.UserUpdateRoute
-import common.client_database.DatabaseIO
+import org.slf4j.LoggerFactory
+
+import scala.concurrent.Future
+import scala.io.StdIn
 
 object UserUpdateServer {
   // Server variables
+  private val log = LoggerFactory.getLogger(this.getClass)
   var running = false;
   val (interface: String, port: Int) = ("localhost", 8001)
 
   def main(args: Array[String]) = {
-    println("Starting the User Update Server...")
+    log.info("Starting the User Update Server...")
 
     implicit val system = ActorSystem(Behaviors.empty, "the-name-of-the-actor-system")
     // needed for the future flatMap/onComplete in the end
@@ -35,7 +35,7 @@ object UserUpdateServer {
 
     // Starts the Http server
     val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt(interface, port).bind(routes.UpdateRoute)
-    println("The server has been started.");
+    log.info("The server has been started.");
 
     waitUntilUserEndsServer();
 
@@ -44,9 +44,9 @@ object UserUpdateServer {
       .flatMap(_.unbind()) // trigger unbinding from the port
       .onComplete(_ => system.terminate()) // and shutdown when done
 
-    DatabaseIO.closeConnection()
+    ClientDatabase.closeConnection()
     Producer.close()
-    println("The server has been stopped.")
+    log.info("The server has been stopped.")
   }
 
 

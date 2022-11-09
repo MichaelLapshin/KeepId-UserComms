@@ -7,10 +7,12 @@ package services.encrypted_data_sender
  * @date: October 1, 2022
  */
 
-import common.message_broker.{Connection, Producer}
 import common.constants.Domain
+import org.slf4j.LoggerFactory
 
 class EncryptedDataSender extends Thread {
+  private val log = LoggerFactory.getLogger(this.getClass)
+
   private def forwardEncryptedData(url: Domain.HostUrl, certificate: Domain.HostCertificate): Unit = {
     // TODO: complete the logic here.
   }
