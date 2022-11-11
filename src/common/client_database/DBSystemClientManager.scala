@@ -8,7 +8,7 @@ package common.client_database
  */
 
 import common.constants.Domain
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 import java.sql.{PreparedStatement, ResultSet}
 
@@ -16,7 +16,7 @@ import java.sql.{PreparedStatement, ResultSet}
  * NOTE: None of the operations below commit the transaction to the database.
  */
 object DBSystemClientManager {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   def authenticateUser(user_id: Domain.UserId, connection: Boolean /* TODO, set valid param type */): Boolean = {
     log.info(s"Authenticating the user with ID ${user_id}.")

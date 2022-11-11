@@ -8,10 +8,10 @@ package services.encrypted_data_sender
  */
 
 import common.constants.Domain
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 class EncryptedDataSender extends Thread {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   private def forwardEncryptedData(url: Domain.HostUrl, certificate: Domain.HostCertificate): Unit = {
     // TODO: complete the logic here.

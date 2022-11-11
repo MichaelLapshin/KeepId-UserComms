@@ -9,7 +9,7 @@ package common.client_database
 
 import common.constants.Domain
 import common.database_structs.UserIdMap
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 import java.sql.{PreparedStatement, Timestamp}
 import java.time.LocalDateTime
@@ -18,7 +18,7 @@ import java.time.LocalDateTime
  * NOTE: None of the operations below commit the transaction to the database.
  */
 object DBUserMap {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
   private val random = new scala.util.Random()
   private val randomRetryLimit: Int = 1000
   private val userPinLength: Int = 20

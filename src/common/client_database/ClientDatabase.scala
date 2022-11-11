@@ -7,7 +7,7 @@ package common.client_database
  * @date: November 1, 2022
  */
 
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
@@ -18,7 +18,7 @@ import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
  * Note: No statement commits automatically.
  */
 object ClientDatabase {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
   private val driver = "com.mysql.jdbc.Driver"
   private val schema = "ClientDatabase"
   private var connection: Connection = _

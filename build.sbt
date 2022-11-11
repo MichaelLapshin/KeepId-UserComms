@@ -9,8 +9,8 @@ lazy val root = (project in file("."))
 
 val AkkaVersion = "2.7.0"
 val AkkaHttpVersion = "10.4.0"
-val KafkaVersion = "3.1.0"
-val MySQLVersion = "5.1.24"
+val KafkaVersion = "3.3.1"
+val MySQLVersion = "8.0.30"
 
 // Akka
 libraryDependencies += "com.typesafe.akka" %% "akka-actor" % AkkaVersion
@@ -18,6 +18,10 @@ libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-http" % AkkaHttpVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion
+
+// Logging
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.4.4"
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5"
 
 // Json parser
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"

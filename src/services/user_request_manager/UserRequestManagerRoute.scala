@@ -13,11 +13,11 @@ import common.message_broker.{Connection, Producer}
 import common.constants.{Domain, RouteReplyMsg}
 import services.user_request_manager.{UserRequestManagerJsonProtocol, UserRequestReceiveData, UserRequestReturnData}
 
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 import spray.json._
 
 class UserRequestManagerRoute extends Directives with UserRequestManagerJsonProtocol {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   private def prepareReturnMessage(): String = {
     // TODO: finish the logic here.

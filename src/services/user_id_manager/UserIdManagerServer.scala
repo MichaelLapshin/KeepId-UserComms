@@ -1,6 +1,6 @@
 package services.user_id_manager
 
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 /**
  * @file: UserIdManagerServer.scala
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  */
 
 object UserIdManagerServer {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   def main(args: Array[String]) = {
     log.info("Starting the User ID Manager Server...")

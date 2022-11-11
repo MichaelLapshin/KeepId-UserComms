@@ -9,7 +9,7 @@ package common.client_database
 
 import common.database_structs.Request
 import common.constants.Domain
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 import java.sql.{PreparedStatement, ResultSet, Timestamp}
 import java.time.LocalDateTime
@@ -18,7 +18,7 @@ import java.time.LocalDateTime
  * NOTE: None of the operations below commit the transaction to the database.
  */
 object DBRequestManager {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   /**
    * setRequestResponseTimeNow()

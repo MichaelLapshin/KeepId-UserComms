@@ -1,6 +1,6 @@
 package services.user_request_fetcher
 
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 /**
  * @file: UserRequestFetchServer.scala
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  */
 
 object UserRequestFetchServer {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   def main(args: Array[String]) = {
     log.info("Starting the User Request Fetch Server...")

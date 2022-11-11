@@ -12,10 +12,10 @@ import akka.http.scaladsl.server.{Directives, Route}
 import common.client_database.{ClientDatabase, DBSystemClientManager}
 import common.constants.{Domain, RouteReplyMsg}
 import common.message_broker.{Connection, Producer}
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   /**
    * Forward the message using the message broker to the Keep.

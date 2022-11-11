@@ -1,6 +1,6 @@
 package services.encrypted_data_sender
 
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 /**
  * @file: EncryptedDataSenderServer.scala
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  */
 
 object EncryptedDataSenderServer {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   def main(args: Array[String]) = {
     log.info("Starting the Encrypted Data Sender Server...")

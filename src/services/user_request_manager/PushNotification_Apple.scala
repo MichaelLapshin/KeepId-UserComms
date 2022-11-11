@@ -2,10 +2,10 @@ package services.user_request_manager
 
 import services.user_request_manager.PushNotification
 import common.Domain
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 object PushNotification_Apple extends PushNotification {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   override def sendRequestNotification(user_id: Domain.UserId): Unit = {
 

@@ -1,10 +1,10 @@
 package services.user_request_manager
 
 import common.Domain
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 object PushNotification {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   def sendRequestNotification(user_id: Domain.UserId): Unit = null
 }

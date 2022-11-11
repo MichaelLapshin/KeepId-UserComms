@@ -12,14 +12,14 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import common.client_database.ClientDatabase
 import common.message_broker.Producer
-import org.slf4j.LoggerFactory
+import com.typesafe.scalalogging.Logger
 
 import scala.concurrent.Future
 import scala.io.StdIn
 
 object UserUpdateServer {
   // Server variables
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
   var running = false;
   val (interface: String, port: Int) = ("localhost", 8001)
 

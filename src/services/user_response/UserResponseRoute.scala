@@ -9,10 +9,12 @@ package services.user_response
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives
+import com.typesafe.scalalogging.Logger
+import spray.json._
+import com.typesafe.scalalogging.Logger
+
 import common.message_broker.{Connection, Producer}
 import common.constants.{Domain, RouteReplyMsg}
-import org.slf4j.LoggerFactory
-import spray.json._
 import services.user_response.{
   UserIdManagerJsonProtocol,
   UserResponseAcceptReceiveData,
@@ -22,7 +24,7 @@ import services.user_response.{
 }
 
 class UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
-  private val log = LoggerFactory.getLogger(this.getClass)
+  private val log = Logger(getClass.getName)
 
   private def prepareReturnMessage(): String = {
     // TODO: finish the logic here.
