@@ -2,7 +2,7 @@ object TestConsumer {
 
 }
 
-import common.message_broker.Connection
+import common.message_broker.{Connection, Topics}
 import org.apache.kafka.clients.consumer.KafkaConsumer
 
 import java.time.Duration
@@ -20,14 +20,14 @@ object KafkaConsumerSubscribeApp extends App {
    */
 
 
-  val props: Properties = Connection.createProps //new Properties()
+  val props: Properties = Connection.props
   props.put("group.id", "test")
   props.put("enable.auto.commit", "true")
   props.put("auto.commit.interval.ms", "300")
 
   val consumer = new KafkaConsumer(props)
 
-  val topics = List(Connection.Topic.KeepUpdateEntryTopic)
+  val topics = List(Topics.UpdateDataTopic)
   try {
     consumer.subscribe(topics.asJava)
     while (true) {

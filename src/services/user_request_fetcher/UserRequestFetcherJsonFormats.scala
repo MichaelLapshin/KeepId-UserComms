@@ -1,7 +1,7 @@
 package services.user_request_fetcher
 
 /**
- * @file: UserRequestFetchJsonFormats.scala
+ * @file: UserRequestFetcherJsonFormats.scala
  * @description: Define the formats of valid received and sent json strings in the user request fetch sequence.
  * @author: KeepId Inc.
  * @date: September 29, 2022
@@ -21,17 +21,17 @@ final case class UserRequestData(
                                   active_time: LocalDateTime,
                                   response_time: LocalDateTime,
                                   expire_time: LocalDateTime
-                                )
+                                ) {}
 
 // API for fetch request from the user
-final case class UserRequestFetchReceiveData(device_id: Domain.DeviceId)
+final case class UserRequestFetchReceiveData() {}
 
 // API for returning the user's requests
-final case class UserRequestFetchReturnData(requests: List[UserRequestData])
+final case class UserRequestFetchReturnData(requests: List[UserRequestData]) {}
 
 // Enables the Json Protocol to implicitly interpret custom formats.
 trait UserIdManagerJsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val userRequestFetchReceiveFormat = jsonFormat1(UserRequestFetchReceiveData)
+  implicit val userRequestFetchReceiveFormat = jsonFormat0(UserRequestFetchReceiveData)
 
   implicit object userRequestFetchReturnFormat extends RootJsonFormat[UserRequestFetchReturnData] {
     def read(value: JsValue) = UserRequestFetchReturnData(value.convertTo[List[UserRequestData]])

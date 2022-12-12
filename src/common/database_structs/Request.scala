@@ -8,7 +8,7 @@ package common.database_structs
  */
 
 import common.constants.Domain
-import java.time._
+import java.time.LocalDateTime
 
 class Request(val request_id: Domain.RequestId,
               val user_id: Domain.UserId,
@@ -17,6 +17,7 @@ class Request(val request_id: Domain.RequestId,
               val active_time: LocalDateTime,
               val response_time: LocalDateTime,
               val expire_time: LocalDateTime) {
-  override def toString: String = f"{ request_id:${request_id}, user_id:${user_id}, company_id:${company_id}, " +
-    f"data_fields:${data_fields}, active_time:${active_time}, response_time:${response_time}, expire_time:${expire_time} }"
+  override def toString: String =
+    f"{ request_id:'$request_id', user_id:'$user_id', company_id:'$company_id', data_fields:'$data_fields'," +
+      f" active_time:'$active_time', response_time:'$response_time', expire_time:'$expire_time' }"
 }

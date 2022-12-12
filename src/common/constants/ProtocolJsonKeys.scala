@@ -12,7 +12,7 @@ object ProtocolJsonKeys {
   val UserId: String = "user_id"
   val UserPin: String = "user_pin"
   val DeviceId: String = "device_id"
-  val UserCertificate: String = "user_certificate"
+  val DeviceToken: String = "device_token"
 
   // Data fields
   val EncryptedDataFields: String = "encrypted_data_fields"
@@ -30,10 +30,13 @@ object ProtocolJsonKeys {
 
   // Company information
   val CompanyId: String = "company_id"
+  val CompanyPin: String = "company_pin"
+  val CompanyPassword: String = "company_password"
   val CompanyName: String = "company_name"
   val CompanyAddress: String = "company_address"
-  val HostUrl: String = "host_url"
-  val HostCertificate: String = "host_certificate"
+  val CompanyHostId: String = "company_host_id"
+  val CompanyHostUrl: String = "company_host_url"
+  val CompanyHostToken: String = "company_host_token"
 
   // Request time
   val ActiveTime: String = "active_time"

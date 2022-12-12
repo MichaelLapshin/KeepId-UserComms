@@ -9,37 +9,57 @@ package services.user_update
 
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
-import akka.http.scaladsl.Http
+import akka.http.scaladsl.Http.ServerBinding
+import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
 import common.client_database.ClientDatabase
 import common.message_broker.Producer
 import com.typesafe.scalalogging.Logger
 
+import java.security.SecureRandom
+import javax.net.ssl.SSLContext
 import scala.concurrent.Future
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.io.StdIn
 
 object UserUpdateServer {
   // Server variables
   private val log = Logger(getClass.getName)
   var running = false;
-  val (interface: String, port: Int) = ("localhost", 8001)
+  val (host: String, port: Int) = ("localhost", 8001)
+  val ShutdownTime: FiniteDuration = 30.seconds
 
   def main(args: Array[String]) = {
     log.info("Starting the User Update Server...")
+
+    // Loads the server certificate
+    log.debug("Checking for the certificate.")
+    if ( /* TODO, complete this certificate check */ ) {
+      log.error("Server certificate could not be found.")
+      return
+    }
 
     implicit val system = ActorSystem(Behaviors.empty, "the-name-of-the-actor-system")
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.executionContext
 
-    // Creates the objects needed to host and route the server
-    val routes = new UserUpdateRoute();
-
     // Starts the Http server
-    val bindingFuture: Future[Http.ServerBinding] = Http().newServerAt(interface, port).bind(routes.UpdateRoute)
+    val sslContext: SSLContext = SSLContext.getInstance("TLS")
+    sslContext.init(Array(), new SecureRandom)
+    val https: HttpsConnectionContext = ConnectionContext.httpsServer(sslContext)
+
+    val serverInstance = Http().newServerAt(host, port)
+    val bindingFuture: Future[Http.ServerBinding] = serverInstance.enableHttps().bind(UserUpdateRoute.UpdateRoute)
+      .map(_.addToCoordinatedShutdown(hardTerminationDeadline = ShutdownTime))
+
+    bindingFuture.failed.foreach{ ex =>
+      log.error(f"Failed to bind $host to $port. Exception: $ex")
+    }
+
     log.info("The server has been started.");
 
     waitUntilUserEndsServer();
 
-    // Terminates the server
+    // Shuts down the server
     bindingFuture
       .flatMap(_.unbind()) // trigger unbinding from the port
       .onComplete(_ => system.terminate()) // and shutdown when done

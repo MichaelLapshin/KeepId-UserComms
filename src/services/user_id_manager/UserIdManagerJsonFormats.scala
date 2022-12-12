@@ -12,18 +12,17 @@ import spray.json.DefaultJsonProtocol
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 
 // Defines the API of for receiving messages from a client user.
-final case class UserIdManagerReceiveData(
-                                           user_certificate: Domain.UserCertificate,
-                                         )
+final case class UserIdManagerReceiveData() {}
 
 // Defines the API for the return message to the client user.
 final case class UserIdManagerReturnData(
                                           device_id: Domain.DeviceId,
+                                          device_token: Domain.DeviceToken,
                                           user_pin: Domain.UserPin
-                                        )
+                                        ) {}
 
 // Enables the Json Protocol to implicitly interpret custom formats.
 trait UserIdManagerJsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val userIdManagerReceiveFormat = jsonFormat1(UserIdManagerReceiveData)
-  implicit val userIdManagerReturnFormat = jsonFormat2(UserIdManagerReturnData)
+  implicit val userIdManagerReceiveFormat = jsonFormat0(UserIdManagerReceiveData)
+  implicit val userIdManagerReturnFormat = jsonFormat3(UserIdManagerReturnData)
 }

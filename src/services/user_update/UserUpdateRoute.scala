@@ -8,11 +8,13 @@ package services.user_update
  * @date: April 10, 2022
  */
 
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
-import common.client_database.{ClientDatabase, DBSystemClientManager}
-import common.constants.{Domain, RouteReplyMsg}
-import common.message_broker.{Connection, Producer}
 import com.typesafe.scalalogging.Logger
+import common.client_database.{ClientDatabase, DBSystemClientManager}
+import common.constants.{Domain, HttpPaths}
+import common.message_broker.{Connection, Producer}
+import common.authentication.DeviceAuth
 
 class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
   private val log = Logger(getClass.getName)
@@ -26,35 +28,43 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
    */
   def updateUserData(user_id: Domain.UserId, encrypted_data_fields: Domain.EncryptedDataFields): Boolean = {
     // Using the Kafka stream, push data to the message broker
-    println(s"Pushing data to the message broker. With user id '$user_id' and encrypted data '$encrypted_data_fields'")
+    log.debug(s"Pushing data to the message broker. With user id '$user_id' and encrypted data '$encrypted_data_fields'.")
 
     val dataToSend = UserUpdateForwardData(user_id, encrypted_data_fields)
-    Producer.send(Connection.Topic.KeepUpdateEntryTopic, dataToSend.toString)
+    Producer.send(Connection.Topic.UpdateDataTopic, dataToSend.toString)
   }
 
   // Route definition
   lazy val UpdateRoute: Route = concat(
-    get {
-      // Ping route
-      log.info("Received ping request.")
-      complete(RouteReplyMsg.Ping)
-    },
-    post {
-      // User update request route
-      entity(as[UserUpdateReceiveData]) { data =>
-        // Processes the request body information
-        val user_id: Domain.UserId = DBSystemClientManager.getUserId(data.device_id)
-        ClientDatabase.commit()
-
-        // Attempts to forward the data
-        if (updateUserData(user_id, data.encrypted_data_fields)) {
-          complete("Update request received.")
-        }else {
-          failWith(new Throwable("Update request could not be processed."))
+    path(HttpPaths.UserUpdate.UpdateData) {
+    authenticateBasicAsync(realm = DeviceAuth.realm, DeviceAuth.authenticate) { user_id =>
+      post {
+        // User update request route
+        entity(as[UserUpdateReceiveData]) { data =>
+          try {
+            // Attempts to forward the data
+            if (updateUserData(user_id, data.encrypted_data_fields)) {
+              log.info(s"Forwarded the data update request for user with ID $user_id.")
+              complete(StatusCodes.OK)
+            } else {
+              log.warn(s"Failed to forward the data update request. Data: $user_id.")
+              complete(StatusCodes.InternalServerError)
+            }
+          } catch {
+            case _: Throwable =>
+              log.warn(f"Exception occurred when processing the data update request $data: ${_}")
+              complete(StatusCodes.InternalServerError)
+          }
         }
       }
+    }
     },
-    failWith(new Throwable(RouteReplyMsg.InvalidRoute))
+    path(HttpPaths.Ping) {
+      get {
+        log.info("Received ping request.")
+        complete(StatusCodes.OK)
+      }
+    }
   )
 
 }

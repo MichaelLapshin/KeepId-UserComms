@@ -7,36 +7,56 @@ package services.user_id_manager
  * @date: September 29, 2022
  */
 
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpProtocol, HttpProtocols, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.{Directives, Route}
 import akka.http.scaladsl.server.Directives._
 import common.message_broker.{Connection, Producer}
-import common.constants.{Domain, RouteReplyMsg}
+import common.constants.{Domain, HttpPaths}
 import com.typesafe.scalalogging.Logger
+import common.client_database.{ClientDatabase, DBUserMap}
+import common.database_structs.User
 import spray.json._
 import services.user_id_manager.{UserIdManagerJsonProtocol, UserIdManagerReceiveData, UserIdManagerReturnData}
 
 class UserIdManagerRoute extends Directives with UserIdManagerJsonProtocol {
   private val log = Logger(getClass.getName)
 
-  private def prepareReturnMessage(): String = {
-    // TODO: finish the logic here.
-  }
-
   // Route definition
   lazy val idManagerRoute: Route = concat(
-    get {
-      // Ping route
-      log.info("Received ping request.")
-      complete(RouteReplyMsg.Ping)
-    },
-    post {
-      // User ID request route
-      entity(as[UserIdManagerReceiveData]) { data =>
-        // Parses the request body
-        // TODO: Complete this logic.
+    path(HttpPaths.UserIdManager.UserCreate) {
+      post {
+        entity(as[UserIdManagerReceiveData]) { data =>
+          try {
+            val new_user: User = DBUserMap.createUniqueUser("null" /* TODO, insert apple ID instead*/)
+            val return_data = UserIdManagerReturnData(
+              device_id = new_user.device_id,
+              device_token = new_user.device_token,
+              user_pin = new_user.user_pin
+            )
+
+            ClientDatabase.commit()
+            complete(
+              HttpResponse(
+                status = StatusCodes.OK,
+                entity = HttpEntity(ContentTypes.`application/json`, return_data.toJson.compactPrint),
+                protocol = HttpProtocols.`HTTP/2.0`
+              )
+            )
+          } catch {
+            case _: Throwable =>
+              log.warn(s"Exception occurred with the following error: ${_}")
+              ClientDatabase.rollback()
+              complete(StatusCodes.InternalServerError)
+          }
+        }
       }
     },
-    failWith(new Throwable(RouteReplyMsg.InvalidRoute))
+    path(HttpPaths.Ping) {
+      get {
+        log.info("Received ping request.")
+        complete(StatusCodes.OK)
+      }
+    }
   )
 
 }

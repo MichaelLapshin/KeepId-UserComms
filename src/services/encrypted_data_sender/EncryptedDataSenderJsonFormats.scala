@@ -15,13 +15,13 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 final case class EncryptedDataReceiveData(
                                            request_id: Domain.RequestId,
                                            encrypted_data_fields: Domain.EncryptedDataFields
-                                         )
+                                         ) {}
 
 // API for returning the user's requests
 final case class EncryptedDataForwardData(
                                            request_id: Domain.RequestId,
                                            encrypted_data_fields: Domain.EncryptedDataFields
-                                         )
+                                         ) {}
 
 // Enables the Json Protocol to implicitly interpret custom formats.
 trait EncryptedDataSenderJsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {

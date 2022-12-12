@@ -7,7 +7,7 @@ package common.client_database
  * @date: October 31, 2022
  */
 
-import common.database_structs.Request
+import common.database_structs.{Request, CompanyHost}
 import common.constants.Domain
 import com.typesafe.scalalogging.Logger
 
@@ -19,6 +19,8 @@ import java.time.LocalDateTime
  */
 object DBRequestManager {
   private val log = Logger(getClass.getName)
+  private val random = new scala.util.Random()
+  private val randomRetryLimit = 1000
 
   /**
    * setRequestResponseTimeNow()
@@ -27,22 +29,88 @@ object DBRequestManager {
    * @return The number of rows that were updated.
    */
   private def setRequestResponseTimeNow(request_id: Domain.RequestId) = {
-    log.debug(f"Setting the response time of request with ID ${request_id} to now.")
+    log.debug(f"Setting the response time of request with ID $request_id to now.")
 
     // Updates the response time
-    val ps: PreparedStatement = ClientDatabase.prepareStatement("UPDATE Request SET response_time = ? WHERE request_id = ?")
+    val ps: PreparedStatement = ClientDatabase.prepareStatement("UPDATE ClientDatabase.Request SET response_time = ? WHERE request_id = ?")
     ps.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()))
     ps.setLong(2, request_id)
 
     val update_count = ps.executeUpdate()
     if (update_count == 0) {
-      log.debug(f"Could not find a request with ID ${request_id}.")
-      throw new Throwable(f"Could not find a request with ID ${request_id}.")
+      log.debug(f"Could not find a request with ID $request_id.")
+      throw new Throwable(f"Could not find a request with ID $request_id.")
     } else if (update_count > 1) {
-      log.warn(f"Found multiple requests with ID ${request_id}.")
-      throw new Throwable(f"Found multiple requests with ID ${request_id}.")
+      log.error(f"Found multiple requests with ID $request_id.")
+      throw new Throwable(f"Found multiple requests with ID $request_id.")
     }
     log.debug("Updated the request response time.")
+  }
+
+  /**
+   * existsRequestId()
+   * Check if the given request ID exists within the database.
+   *
+   * @param request_id , the request ID to check for.
+   * @return True, if the request ID has been found. False, otherwise.
+   */
+  private def existsRequestId(request_id: Domain.RequestId): Boolean = {
+    val ps: PreparedStatement = ClientDatabase.prepareStatement("SELECT * FROM ClientDatabase.Request WHERE request_id = ?")
+    ps.setLong(1, request_id)
+    val result: ResultSet = ps.executeQuery()
+
+    if (result.next()) {
+      log.debug(s"Request with ID $request_id does exists.")
+      true
+    } else {
+      log.debug(s"Request with ID $request_id does not exist.")
+      false
+    }
+  }
+  /**
+   * generateUniqueRequestId()
+   * Generates a random unique request_id.
+   *
+   * @return Long integer representing the unique requesr_id.
+   */
+  def generateUniqueRequestId(): Domain.RequestId = {
+    var attempts: Int = randomRetryLimit
+    while (attempts > 0) {
+      log.debug(s"Attempting to create a request user ID. Attempt: ${randomRetryLimit - attempts}")
+      attempts -= 1
+
+      // Generates a random user_id and validates its existence
+      val request_id: Domain.RequestId = random.nextLong().abs
+      if (existsRequestId(request_id) == false) {
+        log.info(s"Found unique request ID ${request_id} after ${randomRetryLimit - attempts} attempts.")
+        return request_id
+      }
+    }
+    log.warn(f"Failed to generate a unique user_id within $randomRetryLimit attempts.")
+    throw new Throwable(f"Failed to generate a unique user_id within $randomRetryLimit attempts.")
+  }
+
+  /**
+   * getRequestUserId()
+   * Gets the ID of the user associated with the request.
+   *
+   * @param request_id, the request to look for.
+   * @return The ID of the user.
+   */
+  def getRequestUserId(request_id: Domain.RequestId): Domain.UserId = {
+    log.debug(f"Getting user ID of the request with ID $request_id.")
+
+    val ps: PreparedStatement = ClientDatabase.prepareStatement("SELECT user_id FROM ClientDatabase.Request WHERE request_id = ?")
+    ps.setLong(1, request_id)
+    val result: ResultSet = ps.executeQuery()
+
+    if (!result.next()) {
+      log.debug(f"Could not find the request $request_id within the client database.")
+      throw new Throwable(f"Could not find the request $request_id within the client database.")
+    }
+    val user_id: Long = result.getLong("user_id")
+    log.debug(s"Found that the request with ID $request_id is mapped to the user ID $user_id.")
+    return user_id
   }
 
   /**
@@ -52,18 +120,18 @@ object DBRequestManager {
    * @return The ID of the company.
    */
   private def getRequestCompanyId(request_id: Domain.RequestId): Domain.CompanyId = {
-    log.debug(f"Getting company ID of the request with ID ${request_id}.")
+    log.debug(f"Getting company ID of the request with ID $request_id.")
 
     val ps: PreparedStatement = ClientDatabase.prepareStatement("SELECT company_id FROM ClientDatabase.Request WHERE request_id = ?")
     ps.setLong(1, request_id)
     val result: ResultSet = ps.executeQuery()
 
     if (!result.next()) {
-      log.debug(f"Could not find the request ${request_id} within the client database.")
-      throw new Throwable(f"Could not find the request ${request_id} within the client database.")
+      log.debug(f"Could not find the request $request_id within the client database.")
+      throw new Throwable(f"Could not find the request $request_id within the client database.")
     }
     val company_id: Long = result.getLong("company_id")
-    log.debug(s"Found that the request with ID ${request_id} is from the company with ID ${company_id}.")
+    log.debug(s"Found that the request with ID $request_id is mapped to the company ID $company_id.")
     return company_id
   }
 
@@ -155,50 +223,34 @@ object DBRequestManager {
   }
 
   /**
-   * getRequestDestinationUrl()
+   * getCompanyHostInfo()
    * Fetches the URL destination for where the accepted request data should go.
    * @param request_id, the target request.
    * @return The URL of the system responsible for receiving user data requests for the company.
    */
-  def getRequestDestinationUrl(request_id: Domain.RequestId): Domain.HostUrl = {
-    log.debug(s"Getting the destination URL of the request with ID ${request_id}.")
+  def getCompanyHostInfo(request_id: Domain.RequestId): CompanyHost = {
+    log.debug(s"Getting the company host information of the request with ID ${request_id}.")
 
     val company_id: Domain.CompanyId = getRequestCompanyId(request_id)
 
-    val ps: PreparedStatement = ClientDatabase.prepareStatement("SELECT host_url FROM Database.Company WHERE company_id = ?")
+    val ps: PreparedStatement = ClientDatabase.prepareStatement(
+      "SELECT company_host_id, company_host_url, company_host_token FROM Database.Company WHERE company_id = ?"
+    )
     ps.setLong(1, company_id)
     val result: ResultSet = ps.executeQuery()
 
     if (!result.next()) {
-      log.warn(f"Could nto find destination URL based on the request ID ${request_id}.")
-      throw new Throwable(f"Could nto find destination URL based on the request ID ${request_id}.")
+      log.warn(f"Could not find company host information based on the request ID $request_id.")
+      throw new Throwable(f"Could nto find company host information based on the request ID $request_id.")
     }
-    val host_url = result.getString("host_url")
-    log.debug(s"Found that for request with ID ${request_id}, host_url=${host_url}")
-    return host_url
+
+    val company_host = new CompanyHost(
+      company_host_id = result.getLong("company_host_id"),
+      company_host_url = result.getString("company_host_url"),
+      company_host_token = result.getString("company_host_token")
+    )
+    log.debug(s"Found the company host information $company_host for request with ID $request_id.")
+    return company_host
   }
 
-  /**
-   * getRequestDestinationCertificate()
-   * Fetches the destination host certificate for where the accepted request data should go.
-   *
-   * @param request_id, the target request.
-   * @return The certificate of the system responsible for receiving user data requests for the company.
-   */
-  def getRequestDestinationCertificate(request_id: Domain.RequestId): Domain.HostCertificate = {
-    log.debug(s"Getting the destination certificate of the request with ID ${request_id}.")
-
-    val company_id: Domain.CompanyId = getRequestCompanyId(request_id)
-
-    val ps: PreparedStatement = ClientDatabase.prepareStatement("SELECT host_certificate FROM Database.Company WHERE company_id = ?")
-    ps.setLong(1, company_id)
-    val result: ResultSet = ps.executeQuery()
-
-    if (!result.next()) {
-      log.warn(f"Could nto find destination host certificate based on the request ID ${request_id}.")
-      throw new Throwable(f"Could nto find destination host certificate based on the request ID ${request_id}.")
-    }
-    log.debug(s"Found that for request with ID ${request_id}, host_certificate=${host_certificate}")
-    return result.getString("host_certificate")
-  }
 }

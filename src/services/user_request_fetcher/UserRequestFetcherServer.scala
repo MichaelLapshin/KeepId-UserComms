@@ -3,13 +3,13 @@ package services.user_request_fetcher
 import com.typesafe.scalalogging.Logger
 
 /**
- * @file: UserRequestFetchServer.scala
+ * @file: UserRequestFetcherServer.scala
  * @description: The object in charge of starting and stopping the User Request Fetch Server.
  * @author: KeepId Inc.
  * @date: September 29, 2022
  */
 
-object UserRequestFetchServer {
+object UserRequestFetcherServer {
   private val log = Logger(getClass.getName)
 
   def main(args: Array[String]) = {

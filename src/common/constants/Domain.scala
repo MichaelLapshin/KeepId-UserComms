@@ -12,7 +12,7 @@ object Domain {
   type UserId = Long
   type UserPin = String
   type DeviceId = Long
-  type UserCertificate = String
+  type DeviceToken = String
 
   // User device provider identification
   type AppleId = String
@@ -36,8 +36,10 @@ object Domain {
   // Company information
   type CompanyId = Long
   type CompanyPin = String
+  type CompanyPassword = String
   type CompanyName = String
   type CompanyAddress = String
-  type HostUrl = String
-  type HostCertificate = String
+  type CompanyHostId = Long
+  type CompanyHostUrl = String
+  type CompanyHostToken = String
 }
