@@ -7,7 +7,6 @@ package common.message_broker
  * @date: December 11, 2022
  */
 
-
 import com.typesafe.scalalogging.Logger
 
 import java.util.{Collections, Properties}
@@ -16,10 +15,10 @@ import org.apache.kafka.clients.consumer.{ConsumerRecords, KafkaConsumer}
 
 import java.time.Duration
 import java.util
-import collection.JavaConverters._
+import collection.JavaConverters._ // TODO, find non-deprecated import
 
 class Consumer(val Name: String) {
-  private val log = Logger(getClass.getName)
+  protected val log = Logger(getClass.getName)
   private val pollTime = Duration.ofMillis(100)
   private[this] val consumer = new KafkaConsumer[String, String](Connection.props)
 
