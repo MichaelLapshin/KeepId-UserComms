@@ -7,12 +7,16 @@ package services.user_update
  * @date: March 30, 2022
  */
 
+import akka.actor.CoordinatedShutdown
+
+import scala.util.{Failure, Success}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http.ServerBinding
 import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
+import akka.stream.TLSClientAuth
 import common.client_database.ClientDatabase
-import common.message_broker.Producer
+import common.message_broker.{Connection, Producer}
 import com.typesafe.scalalogging.Logger
 
 import java.security.SecureRandom
@@ -20,11 +24,11 @@ import javax.net.ssl.SSLContext
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.io.StdIn
+import scala.sys.process.Process
 
 object UserUpdateServer {
   // Server variables
   private val log = Logger(getClass.getName)
-  var running = false;
   val (host: String, port: Int) = ("localhost", 8001)
   val ShutdownTime: FiniteDuration = 30.seconds
 
@@ -32,59 +36,39 @@ object UserUpdateServer {
     log.info("Starting the User Update Server...")
 
     // Loads the server certificate
-    log.debug("Checking for the certificate.")
-    if ( /* TODO, complete this certificate check */ ) {
+    log.info("Checking for the certificate.")
+    if ( false /* TODO, complete this certificate check */ ) {
       log.error("Server certificate could not be found.")
-      return
+      sys.exit(1)
     }
 
-    implicit val system = ActorSystem(Behaviors.empty, "the-name-of-the-actor-system")
+    implicit val server = ActorSystem(Behaviors.empty, "user-update")
     // needed for the future flatMap/onComplete in the end
-    implicit val executionContext = system.executionContext
+    implicit val executionContext = server.executionContext
 
     // Starts the Http server
     val sslContext: SSLContext = SSLContext.getInstance("TLS")
-    sslContext.init(Array(), new SecureRandom)
+    sslContext.init(null, null, new SecureRandom)
     val https: HttpsConnectionContext = ConnectionContext.httpsServer(sslContext)
 
     val serverInstance = Http().newServerAt(host, port)
-    val bindingFuture: Future[Http.ServerBinding] = serverInstance.enableHttps().bind(UserUpdateRoute.UpdateRoute)
+    serverInstance
+      .enableHttps(https)
+      .bind(UserUpdateRoute.UpdateRoute)
       .map(_.addToCoordinatedShutdown(hardTerminationDeadline = ShutdownTime))
+      .foreach { _ =>
+        log.info(s"HTTP service listening on: ${server.address}")
+        server.whenTerminated.onComplete {
+          case Success(_) => log.info("Shutdown of HTTP endpoint completed.")
+          case Failure(_) => log.info("Shutdown of HTTP endpoint failed.")
+        }
+      }
 
-    bindingFuture.failed.foreach{ ex =>
-      log.error(f"Failed to bind $host to $port. Exception: $ex")
-    }
-
-    log.info("The server has been started.");
-
-    waitUntilUserEndsServer();
-
-    // Shuts down the server
-    bindingFuture
-      .flatMap(_.unbind()) // trigger unbinding from the port
-      .onComplete(_ => system.terminate()) // and shutdown when done
+    log.info("The server has been started.")
+    Connection.waitUntilUserEndsServer()
 
     ClientDatabase.closeConnection()
-    Producer.close()
     log.info("The server has been stopped.")
   }
 
-
-  // TODO: Move this method into a common file for all servers to use.
-  /**
-   * Wait until the user ends the program to continue.
-   */
-  def waitUntilUserEndsServer(): Unit ={
-    // Wait until the user stops the server
-    running = true;
-    while (running) {
-      val std_input: String = StdIn.readLine().toLowerCase() // let it run until user presses return
-
-      if (std_input == "exit" || std_input == "stop") {
-        running = false;
-      }else{
-        println("Enter 'exit' or 'stop' to stop the server.")
-      }
-    }
-  }
 }

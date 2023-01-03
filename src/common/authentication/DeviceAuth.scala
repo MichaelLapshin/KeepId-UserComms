@@ -45,8 +45,8 @@ object DeviceAuth {
         case _ => Future.successful(None)
       }
     } catch {
-      case _ =>
-        log.warn(s"Exception occurred while authenticating a user. Error: ${_}")
+      case x: Throwable =>
+        log.warn(s"Exception occurred while authenticating a user. Error: ${x}")
         Future.successful(None)
     }
   }

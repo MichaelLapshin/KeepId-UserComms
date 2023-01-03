@@ -19,12 +19,12 @@ import common.message_broker.{Connection, Producer, Topics}
 import common.constants.{Domain, HttpPaths}
 import services.user_response.{ResponseType, UserIdManagerJsonProtocol, UserResponseAcceptForwardData, UserResponseAcceptReceiveData, UserResponseRejectReceiveData, UserResponseReportReceiveData}
 
-class UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
+object UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
   private[this] val log = Logger(getClass.getName)
   private[this] val user_response_producer = new Producer()
 
   // Route definition
-  lazy val responseRoute: Route = concat(
+  lazy val ResponseRoute: Route = concat(
     authenticateBasicAsync(realm = RequestAuth.realm, RequestAuth.authenticate) { request_id =>
       concat(
         path(HttpPaths.UserResponse.AcceptDataRequest) { // User accept response route
@@ -51,8 +51,8 @@ class UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
                     complete(StatusCodes.InternalServerError)
                   }
                 } catch {
-                  case _: Throwable =>
-                    log.error(s"Exception occurred with the following error: ${_}")
+                  case x: Throwable =>
+                    log.error(s"Exception occurred with the following error: ${x}")
                     ClientDatabase.rollback()
                     complete(StatusCodes.InternalServerError)
                 }
@@ -95,8 +95,8 @@ class UserResponseRoute extends Directives with UserIdManagerJsonProtocol {
                   ClientDatabase.commit()
                   complete(StatusCodes.OK)
                 } catch {
-                  case _: Throwable =>
-                    log.error(f"Failed to report the request with response $data due to the error: ${_}")
+                  case x: Throwable =>
+                    log.error(f"Failed to report the request with response $data due to the error: ${x}")
                     ClientDatabase.rollback()
                     complete(StatusCodes.InternalServerError)
                 }

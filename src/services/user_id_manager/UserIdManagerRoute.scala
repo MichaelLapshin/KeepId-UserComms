@@ -7,6 +7,8 @@ package services.user_id_manager
  * @date: September 29, 2022
  */
 
+import akka.http.scaladsl.model.HttpMethods.POST
+import akka.http.scaladsl.model.headers.{`Access-Control-Allow-Headers`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Origin`}
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpProtocol, HttpProtocols, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.{Directives, Route}
 import akka.http.scaladsl.server.Directives._
@@ -18,11 +20,11 @@ import common.database_structs.User
 import spray.json._
 import services.user_id_manager.{UserIdManagerJsonProtocol, UserIdManagerReceiveData, UserIdManagerReturnData}
 
-class UserIdManagerRoute extends Directives with UserIdManagerJsonProtocol {
+object UserIdManagerRoute extends Directives with UserIdManagerJsonProtocol {
   private val log = Logger(getClass.getName)
 
   // Route definition
-  lazy val idManagerRoute: Route = concat(
+  lazy val IdManagerRoute: Route = concat(
     path(HttpPaths.UserIdManager.UserCreate) {
       post {
         entity(as[UserIdManagerReceiveData]) { data =>
@@ -39,12 +41,12 @@ class UserIdManagerRoute extends Directives with UserIdManagerJsonProtocol {
               HttpResponse(
                 status = StatusCodes.OK,
                 entity = HttpEntity(ContentTypes.`application/json`, return_data.toJson.compactPrint),
-                protocol = HttpProtocols.`HTTP/2.0`
+                protocol = HttpProtocols.`HTTP/1.1`
               )
             )
           } catch {
-            case _: Throwable =>
-              log.warn(s"Exception occurred with the following error: ${_}")
+            case x: Throwable =>
+              log.warn(s"Exception occurred with the following error: ${x}")
               ClientDatabase.rollback()
               complete(StatusCodes.InternalServerError)
           }

@@ -44,8 +44,8 @@ object CompanyAuth {
         case _ => Future.successful(None)
       }
     } catch {
-      case _ =>
-        log.warn(s"Exception occurred while authenticating a company. Error: ${_}")
+      case x: Throwable =>
+        log.warn(s"Exception occurred while authenticating a company. Error: ${x}")
         Future.successful(None)
     }
   }

@@ -40,7 +40,7 @@ object HttpPaths {
 
   /** Define the route paths used to perform the user request fetcher logic. */
   object UserIdManager {
-    val UserCreate: String = "user/create"
+    val UserCreate: String = "create"
   }
 
   /** Define the route paths used to perform the company request manager logic. */

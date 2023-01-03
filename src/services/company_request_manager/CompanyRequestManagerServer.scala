@@ -9,23 +9,14 @@ package services.company_request_manager
  */
 
 import com.typesafe.scalalogging.Logger
-import common.message_broker.{ForeverConsumer, Topics}
 
 object CompanyRequestManagerServer {
   private val log = Logger(getClass.getName)
-  private val consumer = new ForeverConsumer(getClass.getName)
 
   def main(args: Array[String]) = {
     log.info("Starting the Company Request Manager Server...")
 
-    consumer.subscribe(Topics.EncryptedDataPrivateKeyTopic)
-    consumer.pollAndProcessForever(record =>
-      try {
-
-      } catch {
-        match _ => log.error("Caught an error while poll")
-      }
-    )
+    CompanyRequestManager.runLogic()
 
     log.info("The server has been stopped.")
   }

@@ -19,7 +19,7 @@ import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
  */
 object ClientDatabase {
   private val log = Logger(getClass.getName)
-  private val driver = "com.mysql.jdbc.Driver"
+  private val driver = "com.mysql.cj.jdbc.Driver"
   private val schema = "ClientDatabase"
   private var connection: Connection = _
 
@@ -34,10 +34,10 @@ object ClientDatabase {
     log.info("Opening the connection to the client database.")
     Class.forName(driver)
 
-    // Connects to the database
-    val url: String = sys.env("CLIENT_DB_URL")
-    val username: String = sys.env("CLIENT_DB_USERNAME")
-    val password: String = sys.env("CLIENT_DB_PASSWORD")
+    // Connects to the database // TODO, remove hard-coding
+    val url: String = "jdbc:mysql://keepid-client-database.mysql.database.azure.com:3306/ClientDatabase" //?useSSL=true" // sys.env("CLIENT_DB_URL")
+    val username: String = "dbadmin" // sys.env("CLIENT_DB_USERNAME")
+    val password: String = "A7BgmvNa42UAdHQ" // sys.env("CLIENT_DB_PASSWORD")
     connection = DriverManager.getConnection(url, username, password)
 
     // Set connection configurations

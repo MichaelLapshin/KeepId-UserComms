@@ -139,8 +139,8 @@ object DBUserMap {
       "INSERT INTO User (user_id, user_pin, device_id, device_token, apple_id, registration_time) VALUES (?, ?, ?, ?, ?, ?)"
     )
     ps.setLong(1, user.user_id)
-    ps.setNString(3, user.user_pin)
-    ps.setLong(2, user.device_id)
+    ps.setNString(2, user.user_pin)
+    ps.setLong(3, user.device_id)
     ps.setString(4, user.device_token)
     ps.setString(5, user.apple_id)
     ps.setTimestamp(6, Timestamp.valueOf(user.registration_time))

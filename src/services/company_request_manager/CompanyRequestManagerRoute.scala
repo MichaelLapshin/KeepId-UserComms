@@ -15,11 +15,11 @@ import common.authentication.CompanyHostAuth
 import common.client_database.ClientDatabase
 import common.constants.HttpPaths
 
-class CompanyRequestManagerRoute extends Directives with CompanyRequestManagerJsonProtocol {
+object CompanyRequestManagerRoute extends Directives with CompanyRequestManagerJsonProtocol {
   private val log = Logger(getClass.getName)
 
   // Route definition
-  lazy val requestManagerRoute: Route = concat(
+  lazy val RequestManagerRoute: Route = concat(
     path(HttpPaths.CompanyRequestManager.AcceptDataRequest) {
       authenticateBasicAsync(realm = CompanyHostAuth.realm, CompanyHostAuth.authenticate) { company_id =>
         post {
@@ -27,10 +27,12 @@ class CompanyRequestManagerRoute extends Directives with CompanyRequestManagerJs
             try {
               val return_data = CompanyRequestManagerHostReturnData(
                 request_id = data.request_id,
-                private_key = keyStore
+                private_key = PrivateKeyStore.getKey(data.request_id)
               )
+              PrivateKeyStore.removeKey(data.request_id)
 
               ClientDatabase.commit()
+
               complete(
                 HttpResponse(
                   status = StatusCodes.OK,
@@ -39,8 +41,8 @@ class CompanyRequestManagerRoute extends Directives with CompanyRequestManagerJs
                 )
               )
             } catch {
-              case _: Throwable =>
-                log.warn(s"Exception occurred while trying to server http request with error: ${_}")
+              case x: Throwable =>
+                log.warn(s"Exception occurred while trying to server http request with error: ${x}")
                 ClientDatabase.rollback()
                 complete(StatusCodes.InternalServerError)
             }

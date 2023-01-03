@@ -21,12 +21,12 @@ import common.database_structs.Request
 
 import java.time.{Duration, LocalDateTime}
 
-class UserRequestManagerRoute extends Directives with UserRequestManagerJsonProtocol {
+object UserRequestManagerRoute extends Directives with UserRequestManagerJsonProtocol {
   private val log = Logger(getClass.getName)
   private val expireDuration = Duration.ofHours(24)
 
   // Route definition
-  lazy val requestManagerRoute: Route = concat(
+  lazy val RequestManagerRoute: Route = concat(
     authenticateBasicAsync(realm = CompanyHostAuth.realm, CompanyHostAuth.authenticate) { company_id =>
       path(HttpPaths.UserRequestManager.InitiateDataRequest) {
         post {
@@ -41,7 +41,7 @@ class UserRequestManagerRoute extends Directives with UserRequestManagerJsonProt
                 company_id = company_id,
                 data_fields = data.expected_data_fields,
                 active_time = create_time,
-                response_time = LocalDateTime, // Empty value
+                response_time = null, // Empty value
                 expire_time = create_time.plusMinutes(expireDuration.toMinutes)
               )
 
@@ -55,8 +55,8 @@ class UserRequestManagerRoute extends Directives with UserRequestManagerJsonProt
 
               complete(StatusCodes.OK)
             } catch {
-              case _: Throwable =>
-                log.warn(s"Exception occurred with the following error: ${_}")
+              case x: Throwable =>
+                log.warn(s"Exception occurred with the following error: ${x}")
                 ClientDatabase.rollback()
                 complete(StatusCodes.InternalServerError)
             }

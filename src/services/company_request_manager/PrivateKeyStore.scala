@@ -14,25 +14,33 @@ import scala.collection.mutable
 
 object PrivateKeyStore {
   private val log = Logger(getClass.getName)
-  private var keyStore = mutable.HashMap[Domain.RequestId, Domain.PrivateKey]()
+  private val keyStore = mutable.HashMap[Domain.RequestId, Domain.PrivateKey]()
 
   def storeKey(request_id: Domain.RequestId, private_key: Domain.PrivateKey): Unit = {
     log.info(f"Storing key of request with ID $request_id.")
-    keyStore.put(request_id, private_key)
+    this.synchronized {
+      keyStore.put(request_id, private_key)
+    }
   }
 
   def containsKey(request_id: Domain.RequestId): Boolean = {
     log.debug(f"Key store contains an entry for request with ID $request_id.")
-    keyStore.contains(request_id)
+    this.synchronized {
+      keyStore.contains(request_id)
+    }
   }
 
   def getKey(request_id: Domain.RequestId): Domain.PrivateKey = {
     log.info(f"Getting key of request with ID $request_id.")
-    keyStore.getOrElse(request_id, None)
+    this.synchronized {
+      keyStore.getOrElse(request_id, "")
+    }
   }
 
   def removeKey(request_id: Domain.RequestId): Unit = {
     log.info(f"Deleting key of request with ID $request_id.")
-    keyStore.remove(request_id)
+    this.synchronized {
+      keyStore.remove(request_id)
+    }
   }
 }

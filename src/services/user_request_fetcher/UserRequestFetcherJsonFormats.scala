@@ -31,16 +31,9 @@ final case class UserRequestFetchReturnData(requests: List[UserRequestData]) {}
 
 // Enables the Json Protocol to implicitly interpret custom formats.
 trait UserIdManagerJsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val userRequestFetchReceiveFormat = jsonFormat0(UserRequestFetchReceiveData)
-
-  implicit object userRequestFetchReturnFormat extends RootJsonFormat[UserRequestFetchReturnData] {
-    def read(value: JsValue) = UserRequestFetchReturnData(value.convertTo[List[UserRequestData]])
-
-    def write(f: UserRequestFetchReturnData): JsValue = JsObject(ProtocolJsonKeys.Requests -> f.requests.toJson)
-  }
 
   implicit object userRequestFormat extends RootJsonFormat[UserRequestData] {
-    def read(value: JsValue) = UserRequestData(
+    override def read(value: JsValue) = UserRequestData(
       request_id = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.RequestId, null).convertTo[Long],
       company_id = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.CompanyId, null).convertTo[Long],
       company_name = value.asJsObject.fields.getOrElse(ProtocolJsonKeys.CompanyName, null).toString,
@@ -50,7 +43,7 @@ trait UserIdManagerJsonProtocol extends SprayJsonSupport with DefaultJsonProtoco
       expire_time = LocalDateTime.parse(value.asJsObject.fields.getOrElse(ProtocolJsonKeys.ExpireTime, Time.NullTime).toString, Time.StringFormat)
     )
 
-    def write(f: UserRequestData): JsValue = JsObject(
+    override def write(f: UserRequestData): JsValue = JsObject(
       ProtocolJsonKeys.RequestId -> f.request_id.toJson,
       ProtocolJsonKeys.CompanyId -> f.company_id.toJson,
       ProtocolJsonKeys.CompanyName -> f.company_name.toJson,
@@ -59,6 +52,13 @@ trait UserIdManagerJsonProtocol extends SprayJsonSupport with DefaultJsonProtoco
       ProtocolJsonKeys.ResponseTime -> f.response_time.format(Time.StringFormat).toJson,
       ProtocolJsonKeys.ExpireTime -> f.expire_time.format(Time.StringFormat).toJson
     )
+  }
+
+  implicit val userRequestFetchReceiveFormat = jsonFormat0(UserRequestFetchReceiveData)
+
+  implicit object userRequestFetchReturnFormat extends RootJsonFormat[UserRequestFetchReturnData] {
+    override def read(value: JsValue) = UserRequestFetchReturnData(value.convertTo[List[UserRequestData]])
+    override def write(f: UserRequestFetchReturnData): JsValue = JsObject(ProtocolJsonKeys.Requests -> f.requests.toJson)
   }
 }
 

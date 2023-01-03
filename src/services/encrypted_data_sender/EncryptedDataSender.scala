@@ -16,14 +16,10 @@ import common.constants.Domain
 import com.typesafe.scalalogging.Logger
 import common.client_database.DBRequestManager
 import common.database_structs.CompanyHost
-import common.message_broker.{Consumer, ForeverConsumer, Topics}
-import org.apache.kafka.clients.consumer.ConsumerRecords
+import common.message_broker.{ForeverConsumer, Topics}
 import spray.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
-import scala.jdk.CollectionConverters.IterableHasAsScala
 
 object EncryptedDataSender extends EncryptedDataSenderJsonProtocol {
   implicit val system = ActorSystem() // Akka actors // TODO, look over this
@@ -32,11 +28,11 @@ object EncryptedDataSender extends EncryptedDataSenderJsonProtocol {
   private val consumer = new ForeverConsumer(getClass.getName)
 
   def runLogic(): Unit = {
-    log.info(f"Subscribing encrypted data sender to topic '$Topics.EncryptedDataTopic'.")
+    log.info(f"Subscribing encrypted data sender to topic '${Topics.EncryptedDataTopic}'.")
     consumer.subscribe(Topics.EncryptedDataTopic)
     consumer.pollAndProcessForever(record =>
       try {
-        val data: EncryptedDataReceiveData = record.value().parseJson.toJson.convertTo[EncryptedDataReceiveData]
+        val data: EncryptedDataReceiveData = record.value().parseJson.convertTo[EncryptedDataReceiveData]
 
         // Fetch request information
         val company_host: CompanyHost = DBRequestManager.getCompanyHostInfo(data.request_id)
@@ -65,7 +61,7 @@ object EncryptedDataSender extends EncryptedDataSenderJsonProtocol {
         }
 
       } catch {
-        case _ => log.error("Failed to process and forward the encrypted data record.")
+        case _: Throwable => log.error("Failed to process and forward the encrypted data record.")
       }
     )
     consumer.close()

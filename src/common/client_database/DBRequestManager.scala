@@ -181,7 +181,7 @@ object DBRequestManager {
     val df_ps: PreparedStatement = ClientDatabase.prepareStatement("SELECT data_field FROM ClientDatabase.RequestDataFields WHERE request_id = ?")
     val df_result: ResultSet = df_ps.executeQuery()
     while (df_result.next()) {
-      df_list += df_result.getString("data_field")
+      df_list ::= df_result.getString("data_field")
     }
 
     val request = new Request(

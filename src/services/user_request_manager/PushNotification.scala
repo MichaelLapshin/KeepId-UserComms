@@ -1,10 +1,10 @@
 package services.user_request_manager
 
-import common.Domain
+import common.constants.Domain
 import com.typesafe.scalalogging.Logger
 
-object PushNotification {
+abstract class PushNotification {
   private val log = Logger(getClass.getName)
 
-  def sendRequestNotification(user_id: Domain.UserId): Unit = null
+  def sendRequestNotification(user_id: Domain.UserId): Unit
 }

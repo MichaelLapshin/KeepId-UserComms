@@ -13,11 +13,12 @@ import akka.http.scaladsl.server.{Directives, Route}
 import com.typesafe.scalalogging.Logger
 import common.client_database.{ClientDatabase, DBSystemClientManager}
 import common.constants.{Domain, HttpPaths}
-import common.message_broker.{Connection, Producer}
+import common.message_broker.{Connection, Producer, Topics}
 import common.authentication.DeviceAuth
 
-class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
+object UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
   private val log = Logger(getClass.getName)
+  private val producer = new Producer()
 
   /**
    * Forward the message using the message broker to the Keep.
@@ -31,7 +32,7 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
     log.debug(s"Pushing data to the message broker. With user id '$user_id' and encrypted data '$encrypted_data_fields'.")
 
     val dataToSend = UserUpdateForwardData(user_id, encrypted_data_fields)
-    Producer.send(Connection.Topic.UpdateDataTopic, dataToSend.toString)
+    producer.send(Topics.UpdateDataTopic, dataToSend.toString)
   }
 
   // Route definition
@@ -51,8 +52,8 @@ class UserUpdateRoute extends Directives with UserUpdateJsonProtocol {
               complete(StatusCodes.InternalServerError)
             }
           } catch {
-            case _: Throwable =>
-              log.warn(f"Exception occurred when processing the data update request $data: ${_}")
+            case x: Throwable =>
+              log.warn(f"Exception occurred when processing the data update request $data: ${x}")
               complete(StatusCodes.InternalServerError)
           }
         }

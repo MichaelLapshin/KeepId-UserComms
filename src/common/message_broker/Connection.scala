@@ -11,15 +11,17 @@ import com.typesafe.scalalogging.Logger
 import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 
 import java.util.Properties
+import scala.io.StdIn
 
 object Connection {
   private val log = Logger(getClass.getName)
+  private var running = false
 
   /**
    * Define information about the message broker.
    */
   object MsgBrokerInfo {
-    val MessageBrokerUrl: String = sys.env("KAFKA_TOPIC_MSG_BROKER_URL")
+    val MessageBrokerUrl: String = "192.168.1.56:9093" // sys.env("MESSAGE_BROKER_URL") // TODO, remove hard-coded
     log.info(s"Loaded the message broker URL as '$MessageBrokerUrl'.")
   }
 
@@ -74,5 +76,22 @@ object Connection {
     if (!contains) log.error(s"Topic '$topic' doesn't exist on Kafka server.")
     else log.debug(s"Topic '$topic' exists on Kafka server.")
     return contains
+  }
+
+  /**
+   * Wait until the user ends the program to continue.
+   */
+  def waitUntilUserEndsServer(): Unit = {
+    // Wait until the user stops the server
+    running = true
+    while (running) {
+      val std_input: String = StdIn.readLine().toLowerCase() // let it run until user presses return
+
+      if (std_input == "exit" || std_input == "stop") {
+        running = false;
+      } else {
+        println("Enter 'exit' or 'stop' to stop the server.")
+      }
+    }
   }
 }

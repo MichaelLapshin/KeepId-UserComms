@@ -19,11 +19,11 @@ import common.database_structs.Request
 import spray.json._
 import services.user_request_fetcher.{UserIdManagerJsonProtocol, UserRequestData, UserRequestFetchReceiveData, UserRequestFetchReturnData}
 
-class UserRequestFetcherRoute extends Directives with UserIdManagerJsonProtocol {
+object UserRequestFetcherRoute extends Directives with UserIdManagerJsonProtocol {
   private val log = Logger(getClass.getName)
 
   // Route definition
-  lazy val requestFetchRoute: Route = concat(
+  lazy val RequestFetchRoute: Route = concat(
     authenticateBasicAsync(realm = DeviceAuth.realm, DeviceAuth.authenticate) { user_id =>
       path(HttpPaths.UserRequestFetcher.GetRequestsActive) {
         get {
@@ -39,8 +39,8 @@ class UserRequestFetcherRoute extends Directives with UserIdManagerJsonProtocol 
                 )
               )
             } catch {
-              case _: Throwable =>
-                log.warn(s"Exception occurred with the following error: ${_}")
+              case x: Throwable =>
+                log.warn(s"Exception occurred with the following error: ${x}")
                 ClientDatabase.rollback()
                 complete(StatusCodes.InternalServerError)
             }

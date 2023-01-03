@@ -14,7 +14,9 @@ object EncryptedDataSenderServer {
 
   def main(args: Array[String]) = {
     log.info("Starting the Encrypted Data Sender Server...")
+
     EncryptedDataSender.runLogic()
+
     log.info("The server has been stopped.")
   }
 }
