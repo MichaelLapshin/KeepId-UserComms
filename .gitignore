@@ -15,7 +15,7 @@ secrets/
 *.ipr
 *.iws
 .idea
-out
+out/
 lib/
 
 # Others
@@ -23,7 +23,7 @@ dist/
 logs/
 
 # sbt
-project/project/s
+project/project/
 project/target/
 target/
 .bsp/sbt.json

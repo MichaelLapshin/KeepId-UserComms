@@ -1,29 +1,23 @@
-# Image names
-IMG_DATABASE = image_database:0.0.1
-IMG_ENCRYPTED_DATA_SENDER = image_encrypted_data_sender:0.0.1
-IMG_USER_ID_MANAGER = image_user_id_manager:0.0.1
-IMG_USER_REQUEST_FETCHER = image_user_request_fetcher:0.0.1
-IMG_USER_REQUEST_MANAGER = image_user_request_manager:0.0.1
-IMG_USER_RESPONSE = image_user_response:0.0.1
-IMG_USER_UPDATE = image_user_update:0.0.1
+# Creates local docker images for all services
+VERSION = local
 
-# Fetch the Client database credentials
-DB_USERNAME = dbadmin
-DB_PASSWORD = null  	# This variable needs to be set when 'make' is called
+all: build-service-jars build-docker-images
 
-all: run-unit-tests docker-build
+build-service-jars:
+	echo " ### KeepId ### Building the service jars..."
+	sbt compile assembly
 
-run-unit-tests:
-	echo "Running unit tests..."
-	echo "Done running unit tests."
+build-docker-images:
+	echo " ### KeepId ### Building the docker image for each service..."
+	docker build company_request_manager/Dockerfile -t company_request_manager:${VERSION}
+	docker build encrypted_data_sender/Dockerfile -t encrypted_data_sender:${VERSION}
+	docker build user_id_manager/Dockerfile -t user_id_manager:${VERSION}
+	docker build user_request_fetcher/Dockerfile -t user_request_fetcher:${VERSION}
+	docker build user_request_manager/Dockerfile -t user_request_manager:${VERSION}
+	docker build user_response/Dockerfile -t user_response:${VERSION}
+	docker build user_update/Dockerfile -t user_update:${VERSION}
 
-# Build the service images
-docker-build:
-	echo "Building the service images."
-	docker build --target /src/services/encrypted_data_sender/Dockerfile --file $IMG_ENCRYPTED_DATA_SENDER --progress
-	docker build --target /src/services/encrypted_data_sender/Dockerfile --file $IMG_USER_ID_MANAGER --progress
-	docker build --target /src/services/encrypted_data_sender/Dockerfile --file $IMG_USER_REQUEST_FETCHER --progress
-	docker build --target /src/services/encrypted_data_sender/Dockerfile --file $IMG_USER_REQUEST_MANAGER --progress
-	docker build --target /src/services/encrypted_data_sender/Dockerfile --file $IMG_USER_RESPONSE --progress
-	docker build --target /src/services/encrypted_data_sender/Dockerfile --file $IMG_USER_UPDATE --progress
-	echo "Done building the service images."
+.PHONY: clean
+clean:
+	echo " ### KeepId ### Cleaning the project..."
+	sbt clean

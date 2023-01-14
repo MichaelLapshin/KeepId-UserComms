@@ -1,8 +1,14 @@
-# KeepId-Comms repository:
+# KeepId-UserComms repository:
 This project contains the source code for creating the services and storage volumes surrounding the keep.
 The services are developed in Scala.
 
-# Setup
+# Service Deployment
+* Compile all the services with the linux command ```sbt clean compile assembly```.
+* Create an image of a particular service by running ```docker build [path_to_service_dockerfile] -t [image_tag]```.
+* Deploy an image with ```docker run [image_name:tag]```.
+* Deploy all the services with Kubernetes with command ```kubectl apply -f [k8s_resources_file]```.
+
+# Setup (deprecated, not applicable)
 * Clone all KeepId repositories on the same level of a directory.
 * Create a directory called "secrets" and create/import the following files with content:
   * 'credentials.yaml'

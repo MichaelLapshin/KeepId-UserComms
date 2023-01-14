@@ -2,7 +2,6 @@ object TestConsumer {
 
 }
 
-import common.message_broker.{Connection, Topics}
 import org.apache.kafka.clients.consumer.KafkaConsumer
 
 import java.time.Duration
