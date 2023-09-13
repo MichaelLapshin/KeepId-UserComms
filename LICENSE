@@ -1,0 +1,63 @@
+Developed by KeepId Ltd.
+Copyright (c) 2022-2023 KeepId Ltd. All rights reserved.
+
+DUAL LICENSING AGREEMENT
+
+This Dual Licensing Agreement ("Agreement") is entered into 
+by and between KeepId Ltd. ("Licensor") and any party 
+wishing to use the licensed code ("Licensee").
+
+LICENSE OPTION 1: Open Source License
+
+Permitted Uses and Redistribution Conditions:
+
+Licensee is granted a non-exclusive, worldwide, royalty-free 
+license to view, analyze, use, extend, and create derivative 
+works from the source code of the project for non-commercial 
+purposes. Licensee must provide proper attribution to Licensor 
+and ensure that any derivative works, whether in source or binary 
+form, maintain the same open-source and free for non-commercial 
+use license terms. Redistributions, in both source and binary 
+forms, are allowed, provided that they adhere to the following conditions:
+ * Redistributions of source code must preserve the above copyright notice, 
+   this list of conditions, and the subsequent disclaimer.
+ * Redistributions in binary form must include the same copyright notice, 
+   this list of conditions, and the accompanying disclaimer in the 
+   documentation and/or any other materials provided with the distribution.
+
+LICENSE OPTION 2: Commercial License
+
+Commercial Use: 
+Any commercial use, including the creation of derivative works 
+for commercial purposes, requires a separate commercial license 
+agreement to be negotiated and executed between Licensor and Licensee.
+
+Proprietary Use: 
+Licensor retains the right to use the proprietary portion of the 
+project's code for proprietary derivative projects by Licensor's company.
+
+GENERAL TERMS:
+
+Liability: Licensor disclaims any liability, whether direct or implied, 
+or the usage of the code under this Agreement.
+
+Warranty Disclaimer:
+
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
+FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND 
+PERFORMANCE OF THE SOFTWARE IS WITH YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, 
+YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+Termination: Either party may terminate this Agreement upon written notice 
+if the other party breaches any of its terms. Upon termination, Licensee 
+must cease all use of the code.
+
+Governing Law: This Agreement shall be governed by and construed in accordance 
+with the laws of Canada. Any disputes arising under or in connection with this 
+Agreement shall be subject to the exclusive jurisdiction of the courts located 
+within Canada.
+
+Entire Agreement: This Agreement constitutes the entire agreement between the 
+parties and supersedes all prior and contemporaneous agreements, representations, 
+and understandings.
