@@ -12,19 +12,11 @@ KeepId creates a secure secret sharing pipeline. Following the logic below, it e
 6. KeepId's server decrypt the selected secret with the provided user private keys and securly forwards the secrets to the company.
 7. KeepId re-encrypts the stored secrets in its database with the new public key provided by the user.
 
-# KeepId Architecture
+# KeepId Architecture Overview
+![MVP Server Architecture](images/MVP_Server_Architecture_v1.5.1.png)
 
-![MVP Server Architecture](./MVP_Server_Architecture_v1.5.1.pdf)
-
-![MVP System UML Diagram](./MVP_System_UML_v1.1.0.pdf)
-
-<image src="./MVP_System_UML_v1.1.0.pdf"/>
-
-<embed src="./MVP_Server_Architecture_v1.5.1.pdf" type="application/pdf">
-
-<embed src="./MVP_System_UML_v1.1.0.pdf" type="application/pdf">
-
-<object data="MVP_System_UML_v1.1.0.pdf"type="application/pdf" width="100%"> </object>
+# KeepId-UserCommes UML Diagram 
+![MVP System UML Diagram](images/MVP_System_UML_v1.1.0.png)
 
 ## KeepId-UserComms repository
 This project contains the source code for creating the services and storage volumes surrounding the keep.
