@@ -12,13 +12,32 @@ KeepId creates a secure secret sharing pipeline. Following the logic below, it e
 6. KeepId's server decrypt the selected secret with the provided user private keys and securly forwards the secrets to the company.
 7. KeepId re-encrypts the stored secrets in its database with the new public key provided by the user.
 
+# KeepId Repositories
+- [KeepId-UserComms](https://github.com/MichaelLapshin/KeepId-UserComms) repository
+  - Logical services, API services and storage volumes surrounding "The Keep".
+  - Microservices are developed in Scala.
+- [KeepId-TheKeep](https://github.com/MichaelLapshin/KeepId-TheKeep)
+  - Repository for developing the most security-sensitive component in the project (a.k.a. "The Keep").
+  - Contains logic and API related to encyption/decryption user stored secrets.
+  - Defines database for storing the encrypted-secrets (i.e. the "Holy Cow").
+  - Microservice developed in C++ with the database using NoSQL Cassandra.
+- [KeepId-WebLib](https://github.com/MichaelLapshin/KeepId-WebLib)
+  - Javascript library for websites to request secrets from a user given their 6-digit PIN.
+  - Developed in HTML, Javascript and CSS.
+- (private repository) KeepId-Deployer
+  - Contains scripts, database schemas, secrets, and other deployment-related things.
+- (private repository) KeepId-Website
+  - KeepId's public website source code.
+- (private repository) KeepId_App
+  - KeepId's mobiel application source code.
+
 # KeepId Architecture Overview
 ![MVP Server Architecture](images/MVP_Server_Architecture_v1.5.1.png)
 
 # KeepId-UserCommes UML Diagram 
 ![MVP System UML Diagram](images/MVP_System_UML_v1.1.0.png)
 
-## KeepId-UserComms repository
+## 
 This project contains the source code for creating the services and storage volumes surrounding the keep.
 The services are developed in Scala.
 
