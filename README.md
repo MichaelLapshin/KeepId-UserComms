@@ -13,7 +13,7 @@ KeepId creates a secure secret sharing pipeline. Following the logic below, it e
 7. KeepId re-encrypts the stored secrets in its database with the new public key provided by the user.
 
 # KeepId Repositories
-- [KeepId-UserComms](https://github.com/MichaelLapshin/KeepId-UserComms) repository
+- [KeepId-UserComms](https://github.com/MichaelLapshin/KeepId-UserComms) (this repo)
   - Logical services, API services and storage volumes surrounding "The Keep".
   - Microservices are developed in Scala.
 - [KeepId-TheKeep](https://github.com/MichaelLapshin/KeepId-TheKeep)
@@ -36,10 +36,6 @@ KeepId creates a secure secret sharing pipeline. Following the logic below, it e
 
 # KeepId-UserCommes UML Diagram 
 ![MVP System UML Diagram](images/MVP_System_UML_v1.1.0.png)
-
-## 
-This project contains the source code for creating the services and storage volumes surrounding the keep.
-The services are developed in Scala.
 
 ### Service Deployment
 * Build the service images with `make`.
