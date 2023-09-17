@@ -22,10 +22,13 @@ val commonLibraries = Seq(
   "io.spray" %% "spray-json" % "1.3.6",
 
   // Kafka Client
-  "org.apache.kafka" % "kafka-clients" % "3.3.1",
+  "org.apache.kafka" % "kafka-clients" % "3.3.2",
 
   // MySQL java
-  "mysql" % "mysql-connector-java" % "8.0.30",
+//  "mysql" % "mysql-connector-java" % "8.0.30",
+
+  // Azure SQL Server
+  "com.microsoft.sqlserver" %% "mssql-jdbc" % ""
 )
 
 ThisBuild / assemblyMergeStrategy := {

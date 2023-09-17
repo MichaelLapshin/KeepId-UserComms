@@ -7,6 +7,7 @@ package keepid.services.user_id_manager
  * @date: September 29, 2022
  */
 
+import akka.Done
 import akka.actor.CoordinatedShutdown
 
 import scala.util.{Failure, Success}
@@ -17,23 +18,47 @@ import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
 import akka.stream.TLSClientAuth
 import com.typesafe.scalalogging.Logger
 
-import java.security.SecureRandom
-import javax.net.ssl.SSLContext
+import java.security.{KeyStore, SecureRandom}
+import javax.net.ssl.{KeyManagerFactory, SSLContext, TrustManagerFactory}
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.io.StdIn
 import scala.sys.process.Process
-
 import keepid.common.message_broker.Connection
 import keepid.common.client_database.ClientDatabase
+
+import java.io.FileInputStream
 
 object UserIdManagerServer {
   private val log = Logger(getClass.getName)
   val (host: String, port: Int) = ("localhost", 8002)
-  val ShutdownTime: FiniteDuration = 30.seconds
+  val ShutdownTime: FiniteDuration = 1.minute
 
   def main(args: Array[String]) = {
     log.info("Starting the User ID Manager Server...")
+
+//    // CHAT GPT ////////////
+//    // Load the keystore
+//    val ks = KeyStore.getInstance("PKCS12")
+//    val keystoreFile = new FileInputStream("path/to/keystore.p12")
+//    ks.load(keystoreFile, "keystore-password".toCharArray)
+//
+//    // Create the key manager factory
+//    val kmf = KeyManagerFactory.getInstance("SunX509")
+//    kmf.init(ks, "key-password".toCharArray)
+//
+//    // Create the trust manager factory
+//    val tmf = TrustManagerFactory.getInstance("SunX509")
+//    tmf.init(ks)
+//
+//    // Create the SSL context
+//    val sslContext = SSLContext.getInstance("TLS")
+//    sslContext.init(kmf.getKeyManagers, tmf.getTrustManagers, new SecureRandom)
+//
+//    // Create the HTTPS connection context
+//    val https: HttpsConnectionContext = ConnectionContext.httpsServer(sslContext)
+//
+//    ////////////////////////
 
     // Loads the server certificate
     log.info("Checking for the certificate.")

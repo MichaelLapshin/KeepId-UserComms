@@ -24,12 +24,12 @@ object DBUserMap {
   // For creating IDs
   private val random = new scala.util.Random()
   private val RandomRetryLimit: Int = 1000
-  private val UserPinLength: Int = 20
+  private val UserPinLength: Int = 24
   private val UserPinChars: String = "abcdefghijklmnopqrstuvwxyz0123456789"
 
   // For creating tokens
   private val secureRandom = new SecureRandom()
-  private val DeviceTokenLength: Int = 24
+  private val DeviceTokenLength: Int = 32
   private val DeviceTokenChars: String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 
