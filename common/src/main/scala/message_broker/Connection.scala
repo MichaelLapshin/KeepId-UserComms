@@ -11,7 +11,9 @@ import com.typesafe.scalalogging.Logger
 import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
 
 import java.util.Properties
-import scala.io.StdIn
+import java.util.concurrent.TimeUnit
+import scala.concurrent.duration.Duration
+import scala.concurrent.duration.TimeUnit
 
 object Connection {
   private val log = Logger(getClass.getName)
@@ -79,19 +81,13 @@ object Connection {
   }
 
   /**
-   * Wait until the user ends the program to continue.
+   * Wait until the user ends the program.
    */
   def waitUntilUserEndsServer(): Unit = {
-    // Wait until the user stops the server
-    running = true
-    while (running) {
-      val std_input: String = StdIn.readLine().toLowerCase() // let it run until user presses return
-
-      if (std_input == "exit" || std_input == "stop") {
-        running = false;
-      } else {
-        println("Enter 'exit' or 'stop' to stop the server.")
-      }
+    val delay: Duration = Duration.create(5, TimeUnit.MINUTES)
+    while(true) {
+      log.info(s"This service's main thread is alive and waiting. The next check-up is in ${delay.toMinutes} minutes.")
+      Thread.sleep(delay.toMillis)
     }
   }
 }
